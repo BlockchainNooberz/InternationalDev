@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard | Civic Portal</title>
+  <link rel="stylesheet" href="../../assets/css/portal.css">
+</head>
+<body lang="local">
+  <div class="shell dashboard-layout">
+    <aside class="sidebar no-print">
+      <h2><span class="country-flag" id="country-flag"></span><span id="country-name"></span></h2>
+      <p style="color:var(--muted);font-size:0.85rem;margin-top:6px;" id="label-module-nav">Module navigation</p>
+      <nav id="module-nav"></nav>
+      <div id="lang-toggle" style="margin-top:12px;display:flex;flex-direction:column;gap:6px;"></div>
+      <div style="margin-top:16px;">
+        <a class="pill" href="index.html" id="label-country-hub">← Country Hub</a>
+      </div>
+    </aside>
+    <main class="main-panel">
+      <div class="topbar no-print" style="margin-bottom:0;">
+        <div>
+          <h2 id="module-title" style="font-size:1.3rem;"></h2>
+          <p id="module-desc" style="color:var(--muted);font-size:0.9rem;max-width:720px;"></p>
+        </div>
+        <div class="toolbar">
+          <button class="btn btn-secondary" id="refresh-btn"><span id="label-refresh">Refresh</span></button>
+          <button class="btn btn-primary" id="export-btn"><span id="label-export">Export / Print</span></button>
+        </div>
+      </div>
+      <div class="print-only"><h2 id="label-field-report">Civic Portal — Field Report</h2></div>
+      <div class="panel" id="language-lesson-wrap">
+        <div class="panel-header"><h3 id="label-language-lesson">Language Lesson</h3></div>
+        <div id="language-lesson-panel"></div>
+      </div>
+      <div class="panel">
+        <div class="panel-header"><h3 id="label-country-context">Country Context</h3></div>
+        <div id="country-context"></div>
+      </div>
+      <div class="stats-row" id="stats-row"></div>
+      <div class="grid grid-2">
+        <div class="panel">
+          <div class="panel-header"><h3 id="label-region-chart">Regional Distribution</h3></div>
+          <div class="chart-bar-wrap" id="region-chart"></div>
+        </div>
+        <div class="panel">
+          <div class="panel-header"><h3 id="label-map-panel">Operational Map</h3></div>
+          <div class="map-placeholder" id="map-panel"></div>
+        </div>
+      </div>
+      <div class="grid grid-2">
+        <div class="panel">
+          <div class="panel-header"><h3 id="label-module-uses">Primary Uses</h3></div>
+          <div id="module-uses"></div>
+        </div>
+        <div class="panel">
+          <div class="panel-header"><h3 id="label-module-features">Dashboard Features</h3></div>
+          <div id="module-features"></div>
+        </div>
+      </div>
+      <div class="panel">
+        <div class="panel-header"><h3 id="label-module-insights">Strategic Insights</h3><div id="business-link"></div></div>
+        <div id="module-insights"></div>
+      </div>
+      <div class="panel">
+        <div class="panel-header"><h3 id="label-projects-table">Active Projects & Partners</h3></div>
+        <div id="projects-table"></div>
+      </div>
+      <div class="panel">
+        <div class="panel-header"><h3 id="label-alerts-panel">Alerts & Actions</h3></div>
+        <div id="alerts-panel"></div>
+      </div>
+    </main>
+  </div>
+  <script src="../../assets/js/country-data.js"></script>
+  <script src="../../assets/js/country-enrichment.js"></script>
+  <script src="../../assets/js/language-data.js"></script>
+  <script src="../../assets/js/dashboard-core.js"></script>
+  <script>
+    const params = new URLSearchParams(location.search);
+    CIVIC_DASHBOARD.initDashboard({
+      region: "asia",
+      slug: "taiwan",
+      moduleId: params.get("module") || "humanitarian-ops", localMode: true
+    });
+  </script>
+</body>
+</html>

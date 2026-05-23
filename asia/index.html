@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Asia | Civic Portal</title>
+  <link rel="stylesheet" href="../assets/css/portal.css">
+</head>
+<body>
+  <div class="shell">
+    <div class="topbar">
+      <div class="brand">
+        <div class="brand-mark">CP</div>
+        <div><h1>Asia Operations</h1><p>Country hubs & regional dashboards</p></div>
+      </div>
+      <nav class="nav-pills">
+        <a class="pill" href="../index.html">Global Portal</a>
+        <a class="pill" href="../tools/language-lessons.html">Language Lessons</a>
+        <a class="pill" href="../tools/relocation-command-center.html">Relocation Center</a>
+      </nav>
+    </div>
+    <div class="hero">
+      <h2>Asian Country Dashboards</h2>
+      <p>Each country has English + local-language dashboard versions and a language lesson. Priority countries highlighted.</p>
+    </div>
+    <div class="grid grid-3" id="country-grid"></div>
+    <div class="footer">Civic Portal — asia region</div>
+  </div>
+  <script src="../assets/js/country-data.js"></script>
+  <script>
+    const countries = CIVIC_PORTAL.ASIA;
+    document.getElementById("country-grid").innerHTML = countries.map(c => `
+      <a class="card-link" href="${c.slug}/index.html">
+        <div class="card">
+          <h3>${c.flag} ${c.name}</h3>
+          <p>${c.capital} · ${c.region}</p>
+          <p>${c.focus.slice(0,3).join(" · ")}</p>
+          <div class="card-meta">
+            <span class="badge ${c.priority ? 'badge-green' : 'badge-blue'}">${c.priority ? 'Priority' : 'Available'}</span>
+            <span>EN + local · ${CIVIC_PORTAL.getModulesForCountry(c).length} modules</span>
+          </div>
+        </div>
+      </a>`).join("");
+  </script>
+</body>
+</html>

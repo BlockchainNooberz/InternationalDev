@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Governance Transparency Research | Russia | Civic Portal</title>
+  <link rel="stylesheet" href="../../assets/css/portal.css">
+</head>
+<body>
+  <div class="shell">
+    <div class="topbar">
+      <div class="brand">
+        <div class="brand-mark">📊</div>
+        <div>
+          <h1>Governance Transparency Research</h1>
+          <p>Russia · Public indices · Academic & NGO reference</p>
+        </div>
+      </div>
+      <nav class="nav-pills">
+        <a class="pill" href="../../index.html">Portal</a>
+        <a class="pill" href="index.html">Russia Hub</a>
+        <a class="pill" href="../../tools/sanctions-screening-desk.html">Sanctions Desk</a>
+      </nav>
+    </div>
+
+    <div class="hero" style="border-color:var(--warning);">
+      <h2>Research & transparency dashboard — not an activism platform</h2>
+      <p>
+        This module aggregates <strong>publicly published</strong> governance indicators (Freedom House, Reporters Without Borders,
+        Transparency International, World Justice Project) for academic, NGO, and policy research.
+        It does not collect citizen dissent, organize opposition, or target political change campaigns.
+        Publishing dissent inside Russia carries severe legal risk — this tool is for external researchers only.
+      </p>
+    </div>
+
+    <div class="stats-row" id="gov-stats"></div>
+
+    <div class="grid grid-2">
+      <div class="panel">
+        <div class="panel-header"><h3>Governance Indicator Profile</h3></div>
+        <div class="chart-bar-wrap" id="indicator-chart"></div>
+        <p style="color:var(--muted);font-size:0.82rem;margin-top:12px;" id="gov-notes"></p>
+      </div>
+      <div class="panel">
+        <div class="panel-header"><h3>Comparative Context (selected countries)</h3></div>
+        <table id="compare-table">
+          <thead><tr><th>Country</th><th>Civil Liberties</th><th>Press Freedom Rank</th><th>Corruption Rank</th></tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="panel" style="margin-top:16px;">
+      <div class="panel-header"><h3>Civil Society & Media Environment — Public Record</h3></div>
+      <table>
+        <thead><tr><th>Indicator</th><th>Status</th><th>Source Type</th></tr></thead>
+        <tbody>
+          <tr><td>Independent media operation</td><td><span class="badge badge-red">Severely restricted</span></td><td>RSF, Freedom House</td></tr>
+          <tr><td>NGO "foreign agent" registry</td><td><span class="badge badge-red">Active enforcement</span></td><td>Public registry</td></tr>
+          <tr><td>Public protest (legal framework)</td><td><span class="badge badge-red">Criminalized in practice</span></td><td>Legal analysis</td></tr>
+          <tr><td>Electoral competitiveness</td><td><span class="badge badge-amber">Not competitive</span></td><td>OSCE, academic</td></tr>
+          <tr><td>Judicial independence</td><td><span class="badge badge-red">Not independent</span></td><td>World Justice Project</td></tr>
+          <tr><td>Anti-corruption mechanisms</td><td><span class="badge badge-red">Weak / captured</span></td><td>Transparency International</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="panel" style="margin-top:16px;">
+      <div class="panel-header"><h3>Permitted Research Use Cases</h3></div>
+      <div class="grid grid-3">
+        <div class="card"><h3>NGO Due Diligence</h3><p>Assess operating environment before humanitarian corridor planning.</p></div>
+        <div class="card"><h3>Policy Briefings</h3><p>Cite aggregated indices in academic or think-tank publications.</p></div>
+        <div class="card"><h3>Sanctions Compliance</h3><p>Cross-reference with <a href="../../tools/sanctions-screening-desk.html">Sanctions Screening Desk</a>.</p></div>
+      </div>
+    </div>
+
+    <div class="footer">
+      Data sources: publicly published governance indices only · Updated reference values · Not real-time surveillance
+    </div>
+  </div>
+
+  <script src="../../assets/js/live-data.js"></script>
+  <script>
+    const gov = CIVIC_LIVE.FALLBACK.governance.russia;
+    document.getElementById("gov-notes").textContent = gov.notes;
+
+    document.getElementById("gov-stats").innerHTML = gov.indicators.map(i =>
+      `<div class="stat"><div class="stat-label">${i.label}</div><div class="stat-value">${i.value}</div></div>`
+    ).join("");
+
+    document.getElementById("indicator-chart").innerHTML = gov.indicators.map(i => {
+      const pct = i.max <= 1 ? i.value * 100 : (i.value / i.max) * 100;
+      return `<div class="chart-row"><span>${i.label.split("(")[0]}</span>
+        <div class="chart-bar"><div class="chart-fill" style="width:${pct}%;background:var(--danger)"></div></div>
+        <span>${i.value}</span></div>`;
+    }).join("");
+
+    const compare = [
+      { country: "🇷🇺 Russia", civil: 9, press: 164, corruption: 141 },
+      { country: "🇺🇦 Ukraine", civil: 52, press: 79, corruption: 104 },
+      { country: "🇪🇪 Estonia", civil: 94, press: 15, corruption: 15 },
+      { country: "🇵🇱 Poland", civil: 78, press: 47, corruption: 47 },
+      { country: "🇬🇪 Georgia", civil: 58, press: 58, corruption: 67 }
+    ];
+    document.querySelector("#compare-table tbody").innerHTML = compare.map(c =>
+      `<tr><td>${c.country}</td><td>${c.civil}/100</td><td>#${c.press}</td><td>#${c.corruption}</td></tr>`
+    ).join("");
+  </script>
+</body>
+</html>

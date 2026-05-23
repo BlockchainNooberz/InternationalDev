@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Country Hub | Civic Portal</title>
+  <link rel="stylesheet" href="../../assets/css/portal.css">
+</head>
+<body>
+  <div class="shell">
+    <div class="topbar">
+      <div class="brand">
+        <div class="brand-mark">CP</div>
+        <div>
+          <h1 id="country-title">Country Hub</h1>
+          <p id="country-subtitle">Operational dashboards & field tools</p>
+        </div>
+      </div>
+      <nav class="nav-pills">
+        <a class="pill" href="../../index.html">Global Portal</a>
+        <a class="pill" href="../index.html">Asia</a>
+        <a class="pill" href="../../tools/language-lessons.html#taiwan">Language Lesson</a>
+      </nav>
+    </div>
+    <div class="hero" id="country-hero"></div>
+    <div class="panel no-print" style="margin-bottom:20px;padding:14px;">
+      <strong>Dashboard versions:</strong>
+      <span id="lang-links" style="margin-left:10px;"></span>
+    </div>
+    <h2 class="section-title">Dashboard Modules <span id="module-count"></span></h2>
+    <div class="grid grid-3" id="module-grid"></div>
+    <h2 class="section-title">Cross-Region Tools</h2>
+    <div class="grid grid-2" id="tools-grid"></div>
+    <div class="footer">Civic Portal — portfolio demo for gov, NGO, and humanitarian operations</div>
+  </div>
+  <script src="../../assets/js/country-data.js"></script>
+  <script src="../../assets/js/language-data.js"></script>
+  <script>
+    const region = "asia";
+    const slug = "taiwan";
+    const country = CIVIC_PORTAL.getCountry(region, slug);
+    const modules = CIVIC_PORTAL.getModulesForCountry(country);
+    const lang = typeof LANGUAGE_DATA !== "undefined" ? LANGUAGE_DATA.get(slug) : null;
+    document.getElementById("country-title").textContent = country.flag + " " + country.name;
+    document.getElementById("country-subtitle").textContent = country.capital + " · " + country.region + (lang ? " · " + lang.native : "");
+    document.getElementById("module-count").textContent = modules.length + " modules";
+    document.getElementById("country-hero").innerHTML = `
+      <h2>${country.name} Operations Center</h2>
+      <p>Priority sectors: ${country.focus.join(", ")}. English and local-language dashboard versions available for every module.</p>
+      <div class="hero-tags">${country.focus.map(f => '<span class="tag">' + f + '</span>').join("")}${country.sanctionsOnly ? '<span class="tag">US Sanctions Reference Only</span>' : ''}</div>`;
+    document.getElementById("lang-links").innerHTML = `
+      <a class="pill active" href="dashboard.html">English</a>
+      <a class="pill" href="dashboard-local.html">${lang ? lang.native : "Local language"}</a>
+      <a class="pill" href="../../tools/language-lessons.html#${slug}">Lesson</a>`;
+    document.getElementById("module-grid").innerHTML = modules.map(m => `
+      <div class="card" style="height:100%;">
+        <h3>${m.icon} ${m.name}</h3>
+        <p>Sectors: ${m.sectors.join(", ")}</p>
+        <div class="card-meta" style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap;">
+          <a class="badge badge-blue" href="dashboard.html?module=${m.id}">EN →</a>
+          <a class="badge badge-green" href="dashboard-local.html?module=${m.id}">${lang ? lang.native : "Local"} →</a>
+        </div>
+      </div>`).join("");
+    document.getElementById("tools-grid").innerHTML = CIVIC_PORTAL.TOOLS.slice(0, 4).map(t => `
+      <a class="card-link" href="../../${t.path.replace('../', '')}">
+        <div class="card"><h3>${t.name}</h3><p>${t.desc}</p></div>
+      </a>`).join("");
+  </script>
+</body>
+</html>

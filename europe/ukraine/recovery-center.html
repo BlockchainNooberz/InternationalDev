@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ukraine Recovery Center | Civic Portal</title>
+  <link rel="stylesheet" href="../../assets/css/portal.css">
+</head>
+<body>
+  <div class="shell">
+    <div class="topbar">
+      <div class="brand">
+        <div class="brand-mark">🇺🇦</div>
+        <div>
+          <h1>Ukraine Recovery Center</h1>
+          <p>EU Facility · Demining · Reconstruction · Humanitarian clusters</p>
+        </div>
+      </div>
+      <nav class="nav-pills">
+        <a class="pill" href="../../index.html">Portal</a>
+        <a class="pill" href="index.html">Ukraine Hub</a>
+        <a class="pill" href="../../portfolio.html">Portfolio PDF</a>
+      </nav>
+    </div>
+
+    <div class="hero">
+      <h2>Post-conflict recovery operations dashboard</h2>
+      <p>Deep operational view for NGO, EU, and bilateral recovery programs — housing, infrastructure, demining, digital gov, and refugee return.</p>
+      <div id="live-status" style="margin-top:12px;"></div>
+    </div>
+
+    <div class="stats-row" id="recovery-stats"></div>
+
+    <div class="grid grid-2">
+      <div class="panel">
+        <div class="panel-header"><h3>Recovery Pillars — Funding Allocation</h3></div>
+        <div class="chart-bar-wrap" id="pillar-chart"></div>
+      </div>
+      <div class="panel">
+        <div class="panel-header"><h3>Live Country Data</h3></div>
+        <div id="country-live"></div>
+      </div>
+    </div>
+
+    <div class="grid grid-2" style="margin-top:16px;">
+      <div class="panel">
+        <div class="panel-header"><h3>Demining & Infrastructure Priority Zones</h3></div>
+        <table>
+          <thead><tr><th>Oblast</th><th>Demining (ha)</th><th>Housing Units</th><th>Status</th></tr></thead>
+          <tbody id="oblast-table"></tbody>
+        </table>
+      </div>
+      <div class="panel">
+        <div class="panel-header"><h3>Active Recovery Partners</h3></div>
+        <table>
+          <thead><tr><th>Partner</th><th>Sector</th><th>Commitment</th></tr></thead>
+          <tbody>
+            <tr><td>European Commission</td><td>EU Ukraine Facility</td><td>€50B framework</td></tr>
+            <tr><td>World Bank</td><td>Infrastructure</td><td>$20B+ pledges</td></tr>
+            <tr><td>UNDP</td><td>Governance & recovery</td><td>$500M+ programs</td></tr>
+            <tr><td>Halifax Initiative</td><td>Demining</td><td>Multi-donor</td></tr>
+            <tr><td>GIZ / KfW</td><td>Energy & municipal</td><td>€1B+ bilateral</td></tr>
+            <tr><td>USAID</td><td>Democracy & economy</td><td>$15B+ since 2022</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <h2 class="section-title">Recovery Module Dashboards</h2>
+    <div class="grid grid-3" id="module-links"></div>
+
+    <div class="panel" style="margin-top:16px;">
+      <div class="panel-header"><h3>UN Humanitarian Funding (reference)</h3><div id="hrp-status"></div></div>
+      <div id="hrp-table"></div>
+    </div>
+  </div>
+
+  <script src="../../assets/js/country-data.js"></script>
+  <script src="../../assets/js/live-data.js"></script>
+  <script>
+    const pillars = [
+      { label: "Housing & Reconstruction", value: 92 },
+      { label: "Energy & Utilities", value: 78 },
+      { label: "Demining & UXO", value: 85 },
+      { label: "Healthcare", value: 64 },
+      { label: "Education", value: 58 },
+      { label: "Digital Infrastructure", value: 71 },
+      { label: "Agriculture", value: 55 }
+    ];
+    const maxP = Math.max(...pillars.map(p => p.value));
+    document.getElementById("pillar-chart").innerHTML = pillars.map(p =>
+      `<div class="chart-row"><span>${p.label}</span><div class="chart-bar"><div class="chart-fill" style="width:${p.value/maxP*100}%"></div></div><span>${p.value}%</span></div>`
+    ).join("");
+
+    const oblasts = [
+      { name: "Kharkiv", demining: 42000, housing: 12400, status: "Active" },
+      { name: "Donetsk", demining: 38000, housing: 8900, status: "Escalated" },
+      { name: "Kherson", demining: 31000, housing: 11200, status: "Active" },
+      { name: "Mykolaiv", demining: 22000, housing: 7600, status: "Active" },
+      { name: "Kyiv", demining: 8500, housing: 4200, status: "Monitoring" },
+      { name: "Odesa", demining: 12000, housing: 5800, status: "Active" }
+    ];
+    document.getElementById("oblast-table").innerHTML = oblasts.map(o =>
+      `<tr><td>${o.name}</td><td>${o.demining.toLocaleString()}</td><td>${o.housing.toLocaleString()}</td>
+      <td><span class="badge badge-${o.status === "Active" ? "green" : o.status === "Escalated" ? "red" : "amber"}">${o.status}</span></td></tr>`
+    ).join("");
+
+    document.getElementById("recovery-stats").innerHTML = [
+      { label: "Recovery Budget (EU)", value: "€50B+" },
+      { label: "Demining Area (ha)", value: "174K" },
+      { label: "Active NGOs", value: "847" },
+      { label: "Housing Units Target", value: "2.1M" },
+      { label: "Returnees Supported", value: "412K" },
+      { label: "Digital Services Live", value: "186" }
+    ].map(s => `<div class="stat"><div class="stat-label">${s.label}</div><div class="stat-value">${s.value}</div></div>`).join("");
+
+    const modules = CIVIC_PORTAL.getModulesForCountry(CIVIC_PORTAL.getCountry("europe", "ukraine"));
+    document.getElementById("module-links").innerHTML = modules.map(m =>
+      `<a class="card-link" href="dashboard.html?module=${m.id}"><div class="card"><h3>${m.icon} ${m.name}</h3><p>${m.sectors.join(", ")}</p></div></a>`
+    ).join("");
+
+    async function loadLive() {
+      const country = await CIVIC_LIVE.fetchCountry("Ukraine");
+      CIVIC_LIVE.renderStatus(document.getElementById("live-status"), country);
+      document.getElementById("country-live").innerHTML = country.population ? `
+        <div class="stats-row">
+          <div class="stat"><div class="stat-label">Population</div><div class="stat-value">${country.population.toLocaleString()}</div></div>
+          <div class="stat"><div class="stat-label">Capital</div><div class="stat-value" style="font-size:1rem;">${country.capital}</div></div>
+          <div class="stat"><div class="stat-label">Region</div><div class="stat-value" style="font-size:1rem;">${country.subregion || country.region}</div></div>
+        </div>
+        <p style="color:var(--muted);font-size:0.85rem;margin-top:8px;">Languages: ${country.languages || "—"} · Currency: ${country.currency || "—"}</p>
+      ` : `<p style="color:var(--muted);">Offline mode — static recovery data active.</p>`;
+
+      const hrp = await CIVIC_LIVE.fetchHumanitarianSummary();
+      CIVIC_LIVE.renderStatus(document.getElementById("hrp-status"), hrp);
+      document.getElementById("hrp-table").innerHTML = `<table><thead><tr><th>Country</th><th>Plan</th><th>Requirement</th><th>Funded</th></tr></thead><tbody>${
+        hrp.rows.map(r => `<tr><td>${r.country}</td><td>${r.plan}</td><td>${r.requirement}</td><td>${r.funded}</td></tr>`).join("")
+      }</tbody></table>`;
+    }
+    loadLive();
+  </script>
+</body>
+</html>
