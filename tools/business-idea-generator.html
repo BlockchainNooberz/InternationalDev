@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Business Idea Generator | Civic Portal</title>
+  <link rel="stylesheet" href="../assets/css/portal.css">
+</head>
+<body>
+  <div class="shell">
+    <div class="topbar">
+      <div class="brand"><div class="brand-mark">CP</div><div><h1>Business Idea Generator</h1><p>Benefit stack: country → gov → people → you → everyone between</p></div></div>
+      <nav class="nav-pills">
+        <a class="pill" href="../index.html">Portal</a>
+        <a class="pill" href="ngo-relocation-deal.html">NGO Deal Pack</a>
+      </nav>
+    </div>
+    <div class="hero">
+      <h2>Win-win ideas aligned to national priorities</h2>
+      <p>Each idea shows who benefits and in what order — use these to pitch NGOs, gov, and donors. Offer <strong>free deployment</strong> of your dashboards in exchange for relocation sponsorship.</p>
+    </div>
+    <div class="form-row form-row-2" style="max-width:640px;">
+      <div><label>Country</label><select id="country-select"></select></div>
+      <div><label>Sector focus</label><select id="sector-select">
+        <option value="">Auto from country</option>
+        <option value="health-welfare">Health & clinics</option>
+        <option value="digital-gov">Digital gov</option>
+        <option value="refugee-resettlement">Refugee integration</option>
+        <option value="climate-resilience">Climate</option>
+        <option value="business-ecosystem">SME / export</option>
+        <option value="logistics-supply">Humanitarian logistics</option>
+        <option value="education-youth">Education & youth</option>
+        <option value="rural-livelihood">Agriculture / rural</option>
+      </select></div>
+    </div>
+    <button class="btn btn-primary" id="gen-btn">Generate Idea</button>
+    <button class="btn btn-secondary" id="copy-btn">Copy Pitch</button>
+    <div id="idea-output" style="margin-top:20px;"></div>
+  </div>
+  <script src="../assets/js/country-data.js"></script>
+  <script src="../assets/js/business-generator.js"></script>
+  <script>
+    const params = new URLSearchParams(location.search);
+    const sel = document.getElementById("country-select");
+    BUSINESS_GENERATOR.allCountries().forEach(c => {
+      const region = CIVIC_PORTAL.EUROPE.includes(c) ? "europe" : "asia";
+      sel.innerHTML += `<option value="${region}:${c.slug}">${c.flag} ${c.name}</option>`;
+    });
+    if (params.get("country")) {
+      const region = params.get("region") || "europe";
+      sel.value = region + ":" + params.get("country");
+    }
+
+    function render() {
+      const [region, slug] = sel.value.split(":");
+      const country = CIVIC_PORTAL.getCountry(region, slug);
+      const sector = document.getElementById("sector-select").value;
+      const idea = BUSINESS_GENERATOR.generate(country, sector);
+      document.getElementById("idea-output").innerHTML = `
+        <div class="panel"><h2 style="margin-bottom:16px;">${idea.title}</h2>
+        <div class="card" style="margin-bottom:10px;border-left:3px solid var(--success);"><h3>1 · Country benefits</h3><p>${idea.country}</p></div>
+        <div class="card" style="margin-bottom:10px;border-left:3px solid var(--accent);"><h3>2 · Government benefits</h3><p>${idea.gov}</p></div>
+        <div class="card" style="margin-bottom:10px;border-left:3px solid var(--accent-2);"><h3>3 · People benefits</h3><p>${idea.people}</p></div>
+        <div class="card" style="margin-bottom:10px;border-left:3px solid var(--purple);"><h3>4 · Business starter (your profit path)</h3><p>${idea.starter}</p></div>
+        <div class="card" style="margin-bottom:10px;border-left:3px solid var(--warning);"><h3>5 · Everyone in between</h3><p>${idea.between}</p></div>
+        <div class="card" style="background:rgba(16,185,129,0.1);"><h3>↳ Your relocation angle</h3><p>${idea.relocNote}</p>
+        <a class="btn btn-primary" href="ngo-relocation-deal.html" style="margin-top:10px;">Open NGO Deal Pack →</a></div></div>`;
+      window._lastIdea = idea;
+    }
+    document.getElementById("gen-btn").addEventListener("click", render);
+    document.getElementById("copy-btn").addEventListener("click", () => {
+      if (!window._lastIdea) return;
+      const i = window._lastIdea;
+      const text = `${i.title}\n\nCountry: ${i.country}\nGov: ${i.gov}\nPeople: ${i.people}\nStarter: ${i.starter}\nStakeholders: ${i.between}\n\n${i.relocNote}`;
+      navigator.clipboard.writeText(text);
+    });
+    render();
+  </script>
+</body>
+</html>

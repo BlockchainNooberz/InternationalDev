@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NGO Partnership Map | Civic Portal</title>
+  <link rel="stylesheet" href="../assets/css/portal.css">
+</head>
+<body>
+  <div class="shell">
+    <div class="topbar">
+      <div class="brand"><div class="brand-mark">CP</div><div><h1>NGO Partnership Map</h1><p>Implementing partners · co-funding · referrals</p></div></div>
+      <nav class="nav-pills"><a class="pill" href="../index.html">Portal</a></nav>
+    </div>
+    <div class="form-row form-row-2" style="max-width:600px;margin-bottom:16px;">
+      <div><label>Region</label><select id="region"><option value="all">All</option><option value="Europe">Europe</option><option value="Asia">Asia</option></select></div>
+      <div><label>Sector</label><select id="sector"><option value="all">All</option><option>Humanitarian</option><option>Health</option><option>Climate</option><option>Education</option></select></div>
+    </div>
+    <div class="map-placeholder" style="height:280px;margin-bottom:16px;">Partnership network map — select filters to highlight nodes</div>
+    <div class="panel"><div class="panel-header"><h3>Partner Directory</h3></div><div id="partner-list"></div></div>
+  </div>
+  <script>
+    const partners = [
+      { name: "UNHCR", region: "Europe", sector: "Humanitarian", countries: "Poland, Romania, Moldova" },
+      { name: "ICRC", region: "Europe", sector: "Humanitarian", countries: "Ukraine, Georgia" },
+      { name: "MSF", region: "Europe", sector: "Health", countries: "Ukraine, Moldova" },
+      { name: "GIZ", region: "Europe", sector: "Education", countries: "Ukraine, Georgia, Moldova" },
+      { name: "Save the Children", region: "Asia", sector: "Education", countries: "Nepal, Philippines" },
+      { name: "Oxfam", region: "Asia", sector: "Humanitarian", countries: "Nepal, Sri Lanka" },
+      { name: "KOICA", region: "Asia", sector: "Education", countries: "Vietnam, Nepal, Cambodia" },
+      { name: "JICA", region: "Asia", sector: "Climate", countries: "Indonesia, Philippines, Pacific" },
+      { name: "Mercy Corps", region: "Asia", sector: "Humanitarian", countries: "Nepal, Philippines" },
+      { name: "WWF Pacific", region: "Asia", sector: "Climate", countries: "Fiji, Samoa, Palau" }
+    ];
+    function render() {
+      const r = document.getElementById("region").value;
+      const s = document.getElementById("sector").value;
+      const filtered = partners.filter(p => (r === "all" || p.region === r) && (s === "all" || p.sector === s));
+      document.getElementById("partner-list").innerHTML = `<table><thead><tr><th>Organization</th><th>Region</th><th>Sector</th><th>Active Countries</th></tr></thead><tbody>${
+        filtered.map(p => `<tr><td>${p.name}</td><td>${p.region}</td><td><span class="badge badge-blue">${p.sector}</span></td><td>${p.countries}</td></tr>`).join("")
+      }</tbody></table>`;
+    }
+    document.getElementById("region").addEventListener("change", render);
+    document.getElementById("sector").addEventListener("change", render);
+    render();
+  </script>
+</body>
+</html>

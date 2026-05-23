@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>USAJOBS Overseas Relocation | Civic Portal</title>
+  <link rel="stylesheet" href="../assets/css/portal.css">
+</head>
+<body>
+  <div class="shell">
+    <div class="topbar">
+      <div class="brand"><div class="brand-mark">CP</div><div><h1>USAJOBS — Overseas & Relocation Paths</h1><p>Federal careers that can move you abroad with benefits</p></div></div>
+      <nav class="nav-pills">
+        <a class="pill" href="../index.html">Portal</a>
+        <a class="pill" href="deployment-outreach.html">Outreach Hub</a>
+        <a class="pill" href="ngo-relocation-deal.html">NGO Deal</a>
+      </nav>
+    </div>
+    <div class="hero">
+      <h2>US federal jobs with international relocation potential</h2>
+      <p>Search <a href="https://www.usajobs.gov" target="_blank">USAJOBS.gov</a> using these categories. Overseas positions often include relocation allowance, housing (or allowance), R&R travel, and visa support for authorized dependents — pets require separate planning.</p>
+    </div>
+    <div class="stats-row">
+      <div class="stat"><div class="stat-label">Primary portal</div><div class="stat-value" style="font-size:1rem;"><a href="https://www.usajobs.gov" target="_blank">usajobs.gov</a></div></div>
+      <div class="stat"><div class="stat-label">Filter tip</div><div class="stat-value" style="font-size:0.9rem;">Location → Overseas</div></div>
+      <div class="stat"><div class="stat-label">Household</div><div class="stat-value" style="font-size:0.9rem;">Ask about PCS + pets</div></div>
+    </div>
+    <div id="usajobs-list"></div>
+    <div class="panel" style="margin-top:16px;">
+      <div class="panel-header"><h3>Application checklist</h3></div>
+      <ul style="color:var(--muted);line-height:1.9;padding-left:20px;font-size:0.9rem;">
+        <li>Create USAJOBS account + build resume in builder format</li>
+        <li>Upload SF-50 / DD-214 if prior federal or military service</li>
+        <li>Filter <strong>Location: Overseas</strong> and series matching your skills (0343, 0340, 2210, 1102, etc.)</li>
+        <li>Apply to <strong>multiple series</strong> — admin, IT, logistics, program analyst</li>
+        <li>In questionnaire: willing to relocate internationally — yes</li>
+        <li>Parallel track: NGO deal pack (often faster than federal hiring)</li>
+      </ul>
+    </div>
+  </div>
+  <script>
+    const PATHS = [
+      { name: "Foreign Service Officer (State Dept)", series: "Foreign Service", reloc: "Full diplomatic PCS worldwide", speed: "Slow (FSOT)", search: "https://www.usajobs.gov/Search/Results?k=Foreign%20Service", notes: "Ultimate gov relocation credential. Exam required." },
+      { name: "USAID Foreign Service & Direct Hire", series: "0340, 0343, 0081", reloc: "Overseas tours + housing", speed: "Slow–Medium", search: "https://www.usajobs.gov/Search/Results?k=USAID&l=Overseas", notes: "Development/program roles. Mission assignments abroad." },
+      { name: "DOD Civilian Overseas", series: "0343, 1102, 2210", reloc: "PCS, housing allowance, R&R", speed: "Medium", search: "https://www.usajobs.gov/Search/Results?k=Department%20of%20Defense&l=Overseas", notes: "Germany, Korea, Japan, Middle East bases. Army/Air Force Civ Careers." },
+      { name: "Army / Air Force Civilian (AAC/APF)", series: "Various", reloc: "Full overseas PCS package", speed: "Medium", search: "https://www.usajobs.gov/Search/Results?k=Army%20Civilian&l=Overseas", notes: "Logistics, admin, IT on installations worldwide." },
+      { name: "Navy / NAVFAC Civilian", series: "0800, 1102", reloc: "Overseas rotations", speed: "Medium", search: "https://www.usajobs.gov/Search/Results?k=NAVFAC", notes: "Ports and facilities globally." },
+      { name: "Intelligence Community (ODNI portals)", series: "0132, 2210", reloc: "OCONUS postings (cleared)", speed: "Slow", search: "https://www.usajobs.gov/Search/Results?k=intelligence%20analyst", notes: "Clearance required. Apply via agency sites + USAJOBS." },
+      { name: "Peace Corps (separate portal)", series: "Volunteer", reloc: "Country placement + readjustment", speed: "6–12 mo", search: "https://www.peacecorps.gov/join/", notes: "Not luxury travel — but sponsored host country placement." },
+      { name: "FAA / DOT International", series: "2154, 0301", reloc: "Limited OCONUS", speed: "Slow", search: "https://www.usajobs.gov/Search/Results?k=FAA%20international", notes: "Aviation diplomacy posts — smaller volume." },
+      { name: "HHS / CDC Global Health", series: "0600, 0685", reloc: "Temporary duty abroad", speed: "Medium", search: "https://www.usajobs.gov/Search/Results?k=CDC%20global", notes: "Epidemic response deploys; some permanent global health roles." },
+      { name: "VA — Foreign medical (limited)", series: "0600", reloc: "Mostly US", speed: "Slow", search: "https://www.usajobs.gov/Search/Results?k=VA%20medical", notes: "Mostly domestic — parallel for medical credentials." },
+      { name: "UN Secretariat (via USAJOBS listings)", series: "International Org", reloc: "UN package if hired", speed: "Medium", search: "https://www.usajobs.gov/Search/Results?k=United%20Nations", notes: "Some UN posts listed; also apply careers.un.org direct." },
+      { name: "Program Analyst / Admin Overseas (any agency)", series: "0343, 0301, 0391", reloc: "Agency-dependent PCS", speed: "Medium", search: "https://www.usajobs.gov/Search/Results?k=program%20analyst&l=Overseas", notes: "Broadest search — filter Overseas + General Schedule." },
+      { name: "Contract Specialist / Procurement", series: "1102", reloc: "High on OCONUS bases", speed: "Medium", search: "https://www.usajobs.gov/Search/Results?k=contract%20specialist&l=Overseas", notes: "Every base needs 1102s — steady overseas demand." },
+      { name: "IT Specialist OCONUS", series: "2210", reloc: "PCS + housing", speed: "Medium", search: "https://www.usajobs.gov/Search/Results?k=IT%20specialist&l=Overseas", notes: "Match your dashboard/ops tech pitch to 2210 duties." }
+    ];
+    document.getElementById("usajobs-list").innerHTML = PATHS.map(p => `
+      <div class="panel" style="margin-bottom:12px;">
+        <div class="panel-header"><h3>${p.name}</h3><span class="badge badge-blue">${p.series}</span></div>
+        <p><strong>Relocation:</strong> ${p.reloc} · <strong>Timeline:</strong> ${p.speed}</p>
+        <p style="color:var(--muted);font-size:0.88rem;">${p.notes}</p>
+        <a class="btn btn-primary" href="${p.search}" target="_blank" style="margin-top:8px;">Search USAJOBS →</a>
+      </div>`).join("");
+  </script>
+</body>
+</html>

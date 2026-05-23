@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NGO Relocation Deal Pack | Civic Portal</title>
+  <link rel="stylesheet" href="../assets/css/portal.css">
+  <link rel="stylesheet" href="../assets/css/portfolio.css">
+</head>
+<body>
+  <div class="shell">
+    <div class="topbar">
+      <div class="brand"><div class="brand-mark">CP</div><div><h1>NGO Relocation Deal Pack</h1><p>Free tools for them · sponsored exit for you — $0 from your pocket</p></div></div>
+      <nav class="nav-pills">
+        <a class="pill" href="../deployment-pitch.html">Pitch PDF</a>
+        <a class="pill" href="deployment-outreach.html">50+ Orgs</a>
+        <a class="pill" href="sponsorship-pipeline.html">CRM</a>
+      </nav>
+    </div>
+    <div class="hero" style="border-color:var(--success);">
+      <h2>The deal: you build free · they sponsor relocation</h2>
+      <p>You deploy Civic Portal + Health Portal customized for their org at <strong>zero cost to them</strong>. In exchange, they sponsor visa, employer-arranged travel, and housing for you + father + dog + cat. You work pro-bono or at local stipend until stable.</p>
+    </div>
+
+    <div class="grid grid-2">
+      <div class="panel">
+        <div class="panel-header"><h3>What NGOs get ($0 from them)</h3></div>
+        <ul class="portfolio-list">
+          <li>Full Civic Portal — 32 country dashboards customized to their ops</li>
+          <li>Health Portal — free clinic tools for their implementing clinics</li>
+          <li>Offline field agents for low-connectivity zones</li>
+          <li>Sponsorship pipeline + grant reporting dashboards</li>
+          <li>90-day pro-bono customization + training</li>
+          <li>Ongoing maintenance at no charge (your portfolio investment)</li>
+        </ul>
+      </div>
+      <div class="panel">
+        <div class="panel-header"><h3>What you need from them</h3></div>
+        <ul class="portfolio-list">
+          <li>Work visa / permit sponsorship (any lawful route)</li>
+          <li>Employer-arranged travel — commercial direct, charter, or rotator</li>
+          <li>Housing or housing allowance (pet-friendly)</li>
+          <li>Dependent inclusion for father</li>
+          <li>Pet import support letter for dog + cat</li>
+          <li>48–72 hr mobilization once paperwork ready</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="panel" style="margin-top:16px;">
+      <div class="panel-header"><h3>Deal email template</h3>
+        <button class="btn btn-secondary" id="copy-deal">Copy</button></div>
+      <pre id="deal-template" style="background:var(--surface-2);padding:16px;border-radius:8px;font-size:0.85rem;white-space:pre-wrap;"></pre>
+    </div>
+
+    <h2 class="section-title">Best NGO targets for this deal <span>fast deploy + relocation culture</span></h2>
+    <div class="grid grid-3" id="ngo-targets"></div>
+
+    <h2 class="section-title">Your action sequence</h2>
+    <div class="grid grid-2">
+      <div class="card"><h3>Step 1</h3><p>Pick 10 NGOs from outreach hub. Generate business idea for their country.</p></div>
+      <div class="card"><h3>Step 2</h3><p>Send deal email + deployment pitch PDF + link to Health Portal demo.</p></div>
+      <div class="card"><h3>Step 3</h3><p>Offer 30-min screen share showing their country dashboard live.</p></div>
+      <div class="card"><h3>Step 4</h3><p>Log in CRM · follow up day 7 and 14 · parallel USAJOBS overseas apps.</p></div>
+    </div>
+  </div>
+  <script src="../assets/js/outreach-data.js"></script>
+  <script src="../assets/js/andrew-profile.js"></script>
+  <script src="../assets/js/email-templates.js"></script>
+  <script>
+    const dealText = OUTREACH_TEMPLATES.fill("ngoDeal", {}, { org: "[NGO Name]" }).body;
+
+    document.getElementById("deal-template").textContent = dealText;
+    document.getElementById("copy-deal").addEventListener("click", () => {
+      OUTREACH_TEMPLATES.copyToClipboard(dealText);
+    });
+
+    const targets = OUTREACH.ORGANIZATIONS.filter(o =>
+      ["INGO", "UN"].includes(o.cat) && !o.name.includes("Platform") && o.speed.includes("Fast")
+    ).slice(0, 12);
+    document.getElementById("ngo-targets").innerHTML = targets.map(t =>
+      `<a class="card-link" href="${t.apply}" target="_blank"><div class="card"><h3>${t.name}</h3><p>${t.notes}</p><span class="badge badge-green">${t.speed}</span></div></a>`
+    ).join("");
+  </script>
+</body>
+</html>

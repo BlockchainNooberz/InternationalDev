@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Deployment Outreach Hub | Civic Portal</title>
+  <link rel="stylesheet" href="../assets/css/portal.css">
+</head>
+<body>
+  <div class="shell">
+    <div class="topbar">
+      <div class="brand"><div class="brand-mark">CP</div><div><h1>Deployment Outreach Hub</h1><p>50+ orgs · UN · EU · primes · templates · authority map</p></div></div>
+      <nav class="nav-pills">
+        <a class="pill" href="../index.html">Portal</a>
+        <a class="pill" href="../deployment-pitch.html">Pitch Page</a>
+        <a class="pill" href="sponsorship-pipeline.html">Pipeline CRM</a>
+      </nav>
+    </div>
+
+    <div class="hero">
+      <h2>Who actually moves people internationally</h2>
+      <p>Curated list — dead ends removed (FEMA, DARPA, HAARP). Focus on UN, EU, INGOs, USAJOBS overseas, primes, and your NGO free-tools deal.</p>
+    </div>
+
+    <h2 class="section-title">Authority & Leverage Map</h2>
+    <div id="authority-map"></div>
+
+    <h2 class="section-title">Travel Modes <span>charter · direct · humanitarian air — lawful only</span></h2>
+    <div id="travel-paths"></div>
+
+    <h2 class="section-title">Organization Directory <span id="org-count"></span></h2>
+    <div class="form-row form-row-2" style="max-width:600px;margin-bottom:12px;">
+      <div><label>Category</label><select id="cat-filter"></select></div>
+      <div><label>Search</label><input id="org-search" placeholder="Name or country..."></div>
+    </div>
+    <div class="panel"><div id="org-table"></div></div>
+
+    <h2 class="section-title">Email Templates</h2>
+    <div class="grid grid-2">
+      <div class="panel">
+        <div class="panel-header"><h3>Template</h3></div>
+        <select id="template-select" style="margin-bottom:12px;">
+          <option value="coldEmail">Cold outreach (general)</option>
+          <option value="unvSpecific">UN Volunteers specific</option>
+          <option value="euSolidarity">EU Solidarity Corps inquiry</option>
+          <option value="contractorPrime">Defense / USAID prime contractor</option>
+          <option value="charterDeploy">Charter / org-arranged travel (MSF, UNHAS, primes)</option>
+          <option value="ngoDeal">NGO free-tools ↔ relocation deal</option>
+          <option value="usajobsCover">USAJOBS cover letter</option>
+          <option value="followUp7">Follow-up (7 days)</option>
+          <option value="followUp14">Follow-up (14 days)</option>
+          <option value="linkedinConnect">LinkedIn connection note</option>
+        </select>
+        <div class="form-row"><label>Target org name</label><input id="tpl-org" placeholder="e.g. NRC, UNV, KBR"></div>
+        <button class="btn btn-primary" id="gen-template">Generate</button>
+        <button class="btn btn-secondary" id="copy-subject">Copy Subject</button>
+        <button class="btn btn-secondary" id="copy-body">Copy Body</button>
+        <button class="btn btn-secondary" id="add-pipeline">Add to Pipeline</button>
+      </div>
+      <div class="panel">
+        <div class="panel-header"><h3>Preview</h3></div>
+        <p style="font-size:0.82rem;color:var(--muted);">Subject:</p>
+        <pre id="preview-subject" style="background:var(--surface-2);padding:10px;border-radius:8px;font-size:0.85rem;white-space:pre-wrap;margin-bottom:12px;"></pre>
+        <p style="font-size:0.82rem;color:var(--muted);">Body:</p>
+        <pre id="preview-body" style="background:var(--surface-2);padding:12px;border-radius:8px;font-size:0.82rem;white-space:pre-wrap;max-height:360px;overflow:auto;"></pre>
+      </div>
+    </div>
+
+    <h2 class="section-title">This Week's Action Plan</h2>
+    <div class="grid grid-3">
+      <div class="card"><h3>Day 1–2</h3><p>Register UNV (VMAM). Apply MSF, IRC, NRC, ReliefWeb urgent posts. Save profile on deployment-pitch.html.</p></div>
+      <div class="card"><h3>Day 3–4</h3><p>20 cold emails to INGOs + USAID primes. Copy templates above. Log in Pipeline CRM.</p></div>
+      <div class="card"><h3>Day 5–7</h3><p>Follow up all non-replies. Parallel: Estonia startup visa, Poland NGO inquiries, KOICA/JICA.</p></div>
+    </div>
+  </div>
+
+  <script src="../assets/js/outreach-data.js"></script>
+  <script src="../assets/js/andrew-profile.js"></script>
+  <script src="../assets/js/email-templates.js"></script>
+  <script>
+    document.getElementById("authority-map").innerHTML = OUTREACH.AUTHORITY_MAP.map(a => `
+      <div class="card" style="margin-bottom:10px;border-left:3px solid ${a.fit.includes('Poor') || a.fit.includes('Not') ? 'var(--danger)' : a.fit.includes('Best') || a.fit.includes('Strong') ? 'var(--success)' : 'var(--accent)'};">
+        <h3>${a.name}</h3>
+        <p><strong>Leverage:</strong> ${a.leverage}</p>
+        <p style="color:var(--muted);font-size:0.88rem;">${a.reality}</p>
+        ${a.myth ? `<p style="color:var(--warning);font-size:0.85rem;">⚠ ${a.myth}</p>` : ''}
+        <span class="badge badge-${a.fit.includes('Poor') || a.fit.includes('Not') ? 'red' : 'green'}">${a.fit}</span>
+      </div>`).join("");
+
+    document.getElementById("travel-paths").innerHTML = OUTREACH.TRAVEL_PATHS.map(t => `
+      <div class="card" style="margin-bottom:10px;border-left:3px solid ${t.fit === 'Never' ? 'var(--danger)' : t.fit.includes('Best') || t.fit.includes('Strong') ? 'var(--success)' : 'var(--accent)'};">
+        <h3>${t.mode}</h3>
+        <p><strong>Who:</strong> ${t.who}</p>
+        <p style="color:var(--muted);font-size:0.88rem;">${t.notes}</p>
+        <span class="badge badge-${t.fit === 'Never' ? 'red' : 'green'}">${t.fit}</span>
+      </div>`).join("");
+
+    document.getElementById("org-count").textContent = OUTREACH.ORGANIZATIONS.length + " targets";
+    const catSel = document.getElementById("cat-filter");
+    catSel.innerHTML = OUTREACH.CATEGORIES.map(c => `<option value="${c}">${c === 'all' ? 'All categories' : c}</option>`).join("");
+
+    function renderOrgs() {
+      const cat = catSel.value;
+      const q = document.getElementById("org-search").value.toLowerCase();
+      let list = OUTREACH.getByCategory(cat);
+      if (q) list = list.filter(o => (o.name + o.country + o.notes).toLowerCase().includes(q));
+      document.getElementById("org-table").innerHTML = `<table><thead><tr>
+        <th>Org</th><th>Cat</th><th>Region</th><th>Package</th><th>Speed</th><th>Apply</th><th></th>
+      </tr></thead><tbody>${list.map((o,i) => `<tr>
+        <td><strong>${o.name}</strong><br><span style="color:var(--muted);font-size:0.78rem;">${o.notes}</span></td>
+        <td><span class="badge badge-blue">${o.cat}</span></td>
+        <td>${o.country}</td>
+        <td>${o.package}</td>
+        <td>${o.speed}</td>
+        <td><a href="${o.apply}" target="_blank">Apply →</a></td>
+        <td><button class="btn btn-secondary pipeline-add" data-name="${o.name.replace(/"/g,'')}" data-country="${o.country}" style="padding:4px 8px;font-size:0.72rem;">+ CRM</button></td>
+      </tr>`).join("")}</tbody></table>`;
+      document.querySelectorAll(".pipeline-add").forEach(btn => btn.addEventListener("click", () => {
+        const pipe = JSON.parse(localStorage.getItem("sponsorship-pipeline") || "[]");
+        pipe.push({ org: btn.dataset.name, country: btn.dataset.country, package: "From outreach hub", stage: "Research" });
+        localStorage.setItem("sponsorship-pipeline", JSON.stringify(pipe));
+        btn.textContent = "Added";
+      }));
+    }
+    catSel.addEventListener("change", renderOrgs);
+    document.getElementById("org-search").addEventListener("input", renderOrgs);
+    renderOrgs();
+
+    function generateTpl() {
+      const key = document.getElementById("template-select").value;
+      const org = document.getElementById("tpl-org").value || "[Organization]";
+      const filled = OUTREACH_TEMPLATES.fill(key, OUTREACH.loadProfile(), { org, lastContactDate: "[date]" });
+      document.getElementById("preview-subject").textContent = filled.subject;
+      document.getElementById("preview-body").textContent = filled.body;
+      return filled;
+    }
+    document.getElementById("gen-template").addEventListener("click", generateTpl);
+    document.getElementById("copy-subject").addEventListener("click", () => OUTREACH_TEMPLATES.copyToClipboard(document.getElementById("preview-subject").textContent));
+    document.getElementById("copy-body").addEventListener("click", () => OUTREACH_TEMPLATES.copyToClipboard(document.getElementById("preview-body").textContent));
+    document.getElementById("add-pipeline").addEventListener("click", () => {
+      const org = document.getElementById("tpl-org").value.trim();
+      if (!org) return alert("Enter org name");
+      const pipe = JSON.parse(localStorage.getItem("sponsorship-pipeline") || "[]");
+      pipe.push({ org, country: "TBD", package: "Outreach email sent", stage: "Contacted" });
+      localStorage.setItem("sponsorship-pipeline", JSON.stringify(pipe));
+      alert("Added to pipeline as Contacted");
+    });
+    generateTpl();
+  </script>
+</body>
+</html>

@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Health Facility Agents | Health Portal</title>
+  <link rel="stylesheet" href="../../assets/css/portal.css">
+  <link rel="stylesheet" href="../assets/css/health.css">
+</head>
+<body>
+  <div class="shell">
+    <div class="topbar">
+      <div class="brand">
+        <div class="brand-mark" style="background:linear-gradient(135deg,var(--health-accent),var(--health-accent-2));">HP</div>
+        <div><h1>Facility Agents</h1><p>Free offline assistants · Operations only · Not medical advice</p></div>
+      </div>
+      <nav class="nav-pills">
+        <a class="pill" href="../index.html">Health Portal</a>
+      </nav>
+    </div>
+
+    <div class="disclaimer">
+      <strong>Not medical advice.</strong> Agents help with inventory, scheduling, intake forms, referrals logistics, equipment logs, and donor reports.
+      They never diagnose or prescribe. Clinicians follow national protocols.
+    </div>
+
+    <div class="grid grid-2">
+      <div class="panel">
+        <div class="panel-header"><h3>Select Agent</h3><span class="badge health-badge">Free</span></div>
+        <div id="agent-list" style="display:flex;flex-direction:column;gap:6px;"></div>
+      </div>
+      <div class="panel">
+        <div class="panel-header"><h3 id="active-agent-name">Agent Chat</h3></div>
+        <div class="ai-chat" id="agent-chat" style="min-height:280px;"></div>
+        <div class="toolbar" style="margin-top:10px;">
+          <input type="text" id="agent-input" placeholder="Ask about supplies, shifts, referrals..." style="flex:1;">
+          <button class="btn btn-primary" id="agent-send">Send</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel" style="margin-top:16px;" id="tool-panel">
+      <div class="panel-header"><h3 id="tool-title">Agent Tools</h3></div>
+      <div id="tool-content"></div>
+    </div>
+  </div>
+
+  <script src="../assets/js/health-data.js"></script>
+  <script src="../assets/js/health-agent.js"></script>
+  <script>
+    const params = new URLSearchParams(location.search);
+    let activeAgent = params.get("agent") || "supply-advisor";
+
+    function renderAgentList() {
+      document.getElementById("agent-list").innerHTML = HEALTH_PORTAL.AGENTS.map(a => `
+        <button class="btn ${a.id === activeAgent ? 'btn-primary' : 'btn-secondary'}" data-agent="${a.id}" style="text-align:left;justify-content:flex-start;">
+          ${a.icon} ${a.name}
+        </button>`).join("");
+      document.querySelectorAll("[data-agent]").forEach(btn => {
+        btn.addEventListener("click", () => {
+          activeAgent = btn.dataset.agent;
+          renderAgentList();
+          renderTools();
+          document.getElementById("agent-chat").innerHTML = "";
+          HEALTH_AGENT.mountAgent({ agentId: activeAgent, greeting: getGreeting(activeAgent) });
+        });
+      });
+    }
+
+    function getGreeting(id) {
+      const a = HEALTH_PORTAL.getAgent(id);
+      return a.icon + " " + a.name + " ready. Free forever — ask about " + a.topics.slice(0,3).join(", ") + ". Operational guidance only.";
+    }
+
+    function renderTools() {
+      const a = HEALTH_PORTAL.getAgent(activeAgent);
+      document.getElementById("active-agent-name").textContent = a.name;
+      document.getElementById("tool-title").textContent = a.name + " — Quick Tools";
+
+      if (activeAgent === "supply-advisor") {
+        document.getElementById("tool-content").innerHTML = `
+          <p style="color:var(--muted);font-size:0.88rem;margin-bottom:10px;">Enter inventory as: Item, quantity, minimum (one per line)</p>
+          <textarea id="inv-input" rows="6">Paracetamol, 45, 100
+Amoxicillin, 12, 50
+ORS sachets, 200, 100
+Gloves, 8, 20</textarea>
+          <button class="btn btn-primary" id="inv-check" style="margin-top:10px;">Check Stock Alerts</button>
+          <div id="inv-result" style="margin-top:12px;"></div>`;
+        document.getElementById("inv-check").addEventListener("click", () => {
+          const rows = HEALTH_AGENT.checkInventory(document.getElementById("inv-input").value);
+          document.getElementById("inv-result").innerHTML = `<table><thead><tr><th>Item</th><th>Qty</th><th>Min</th><th>Status</th></tr></thead><tbody>${
+            rows.map(r => `<tr><td>${r.name}</td><td class="${r.alert?'inventory-low':''}">${r.qty}</td><td>${r.min}</td><td>${r.alert?'<span class="badge badge-red">REORDER</span>':'<span class="badge badge-green">OK</span>'}</td></tr>`).join("")
+          }</tbody></table>`;
+        });
+      } else if (activeAgent === "staff-scheduler") {
+        document.getElementById("tool-content").innerHTML = `
+          <div class="form-row form-row-2">
+            <div><label>Staff (comma-separated)</label><input id="staff-list" value="Dr. Ana, Nurse Kim, CHW Paulo, Clerk Maria"></div>
+            <div><label>Days</label><input id="staff-days" type="number" value="7"></div>
+          </div>
+          <button class="btn btn-primary" id="roster-btn">Generate Roster</button>
+          <pre id="roster-out" style="margin-top:12px;background:var(--surface-2);padding:12px;border-radius:8px;font-size:0.85rem;white-space:pre-wrap;"></pre>`;
+        document.getElementById("roster-btn").addEventListener("click", () => {
+          document.getElementById("roster-out").textContent = HEALTH_AGENT.generateShiftRoster(
+            document.getElementById("staff-list").value, +document.getElementById("staff-days").value
+          );
+        });
+      } else if (activeAgent === "donor-report-agent") {
+        const profile = HEALTH_PORTAL.loadFacilityProfile();
+        document.getElementById("tool-content").innerHTML = `
+          <div class="form-row form-row-2">
+            <div><label>Facility</label><input id="rpt-fac" value="${profile.name || ''}"></div>
+            <div><label>Monthly visits</label><input id="rpt-visits" type="number" placeholder="e.g. 2400"></div>
+          </div>
+          <div class="form-row"><label>Immunizations</label><input id="rpt-immu" type="number" placeholder="e.g. 380"></div>
+          <button class="btn btn-primary" id="rpt-btn">Generate Report Draft</button>
+          <pre id="rpt-out" style="margin-top:12px;background:var(--surface-2);padding:12px;border-radius:8px;font-size:0.85rem;white-space:pre-wrap;"></pre>`;
+        document.getElementById("rpt-btn").addEventListener("click", () => {
+          document.getElementById("rpt-out").textContent = HEALTH_AGENT.generateDonorReport(
+            document.getElementById("rpt-fac").value,
+            document.getElementById("rpt-visits").value,
+            document.getElementById("rpt-immu").value
+          );
+        });
+      } else {
+        document.getElementById("tool-content").innerHTML = `<p style="color:var(--muted);">Use the chat for guidance, or switch agents for specialized tools.</p>`;
+      }
+    }
+
+    renderAgentList();
+    renderTools();
+    HEALTH_AGENT.mountAgent({ agentId: activeAgent, greeting: getGreeting(activeAgent) });
+  </script>
+</body>
+</html>

@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Portfolio — International Civic Operations</title>
+  <link rel="stylesheet" href="assets/css/portal.css">
+  <link rel="stylesheet" href="assets/css/portfolio.css">
+</head>
+<body>
+  <div class="shell" id="portfolio-root">
+    <div class="topbar no-print">
+      <div class="brand">
+        <div class="brand-mark">A</div>
+        <div>
+          <h1>International Operations Portfolio</h1>
+          <p>Gov · NGO · Humanitarian · Relocation · Civic Tech</p>
+        </div>
+      </div>
+      <nav class="nav-pills">
+        <a class="pill" href="hub.html">Command Hub</a>
+        <a class="pill" href="index.html">Portal</a>
+        <button class="btn btn-primary" id="export-pdf">Export PDF Brief</button>
+      </nav>
+    </div>
+
+    <!-- Printable one-pager -->
+    <article class="portfolio-sheet" id="portfolio-sheet">
+      <header class="portfolio-header">
+        <div>
+          <p class="portfolio-eyebrow">Andrew Elston · Moberly, MO · Immediate deploy</p>
+          <h2>Andrew Elston — Civic & Humanitarian Technology</h2>
+          <p class="portfolio-lead">
+            4 yrs code/AI/blockchain/web · 2 yrs agentic AI · 5 yrs business development.
+            Sole builder of Civic Portal (32 countries) and Health Portal (free clinics worldwide).
+            Seeking sponsored relocation for household including father and pets.
+          </p>
+        </div>
+        <div class="portfolio-contact">
+          <strong>Andrew Elston</strong>
+          <p>(660) 498-5534</p>
+          <p>andrew.elston.relocation@gmail.com</p>
+          <p>204 S Ault St, Moberly, MO 65270</p>
+          <p>Immediate · Pro-bono OK for full relocation package</p>
+          <p>Household: self + father + dog + cat</p>
+        </div>
+      </header>
+
+      <section class="portfolio-section">
+        <h3>Core Competencies</h3>
+        <div class="competency-grid">
+          <span class="tag">Humanitarian Operations Dashboards</span>
+          <span class="tag">NGO Volunteer Coordination</span>
+          <span class="tag">Grant & Funding Pipeline Tools</span>
+          <span class="tag">Relocation & Sponsorship CRM</span>
+          <span class="tag">Offline Field AI Agents</span>
+          <span class="tag">Sanctions Compliance Workflows</span>
+          <span class="tag">Pet-Family Relocation Planning</span>
+          <span class="tag">Multi-Country Civic Portals</span>
+          <span class="tag">Free Health Facility Dashboards</span>
+          <span class="tag">Agentic AI / Stable Diffusion</span>
+          <span class="tag">Blockchain & Algo Trading</span>
+          <span class="tag">5 Yrs Business Development</span>
+        </div>
+      </section>
+
+      <section class="portfolio-section grid grid-2">
+        <div>
+          <h3>Featured Project — Civic Portal</h3>
+          <p style="color:var(--muted);font-size:0.9rem;margin-bottom:10px;">
+            32 country hubs · 14 module types · 480+ dashboard views · 8 cross-region tools.
+            Static, offline-capable HTML/CSS/JS built for low-connectivity field environments.
+          </p>
+          <ul class="portfolio-list">
+            <li>Europe: Ukraine recovery, Poland refugee integration, Estonia e-gov, sanctions desk</li>
+            <li>Asia: Singapore hub, Nepal field ops, Pacific island climate modules</li>
+            <li>Live API layer with offline fallbacks (REST Countries, UN/EU reference feeds)</li>
+            <li>Health Portal: free forever for underserved clinics — 6 facility types, 12 modules, 6 agents</li>
+          </ul>
+        </div>
+        <div>
+          <h3>Relocation Profile</h3>
+          <ul class="portfolio-list">
+            <li><strong>Target:</strong> EU (Poland, Estonia, Romania, Finland) + select Asia hubs</li>
+            <li><strong>Model:</strong> Pro-bono technical/ops work ↔ sponsored relocation + housing</li>
+            <li><strong>Family:</strong> Father (dependent), small dog, cat — pet-import planning included</li>
+            <li><strong>Timeline:</strong> ASAP (&lt; 90 days preferred)</li>
+          </ul>
+        </div>
+      </section>
+
+      <section class="portfolio-section">
+        <h3>Live Portfolio Stats</h3>
+        <div class="stats-row" id="portfolio-stats"></div>
+      </section>
+
+      <section class="portfolio-section">
+        <h3>Quick Links for Hiring Contacts</h3>
+        <div class="grid grid-3 no-print" id="portfolio-links"></div>
+      </section>
+
+      <footer class="portfolio-footer print-only">
+        <p>Generated from Civic Portal · <span id="print-date"></span></p>
+        <p>Contact: Andrew Elston · (660) 498-5534 · andrew.elston.relocation@gmail.com</p>
+      </footer>
+    </article>
+  </div>
+
+  <script src="assets/js/country-data.js"></script>
+  <script src="assets/js/live-data.js"></script>
+  <script src="assets/js/pdf-export.js"></script>
+  <script>
+    document.getElementById("print-date").textContent = new Date().toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" });
+
+    document.getElementById("portfolio-stats").innerHTML = [
+      { label: "Countries", value: CIVIC_PORTAL.EUROPE.length + CIVIC_PORTAL.ASIA.length },
+      { label: "Dashboard Modules", value: CIVIC_PORTAL.MODULES.length },
+      { label: "Field Tools", value: CIVIC_PORTAL.TOOLS.length },
+      { label: "Priority Hubs", value: [...CIVIC_PORTAL.EUROPE, ...CIVIC_PORTAL.ASIA].filter(c => c.priority).length },
+      { label: "Offline Ready", value: "100%" },
+      { label: "Regions", value: "EU + Asia-Pacific" }
+    ].map(s => `<div class="stat"><div class="stat-label">${s.label}</div><div class="stat-value">${s.value}</div></div>`).join("");
+
+    const links = [
+      { name: "Andrew Command Hub", href: "hub.html" },
+      { name: "Immediate Deployment Pitch", href: "deployment-pitch.html" },
+      { name: "50+ Org Outreach Hub", href: "tools/deployment-outreach.html" },
+      { name: "Pipeline CRM", href: "tools/sponsorship-pipeline.html" },
+      { name: "Ukraine Recovery Center", href: "europe/ukraine/recovery-center.html" },
+      { name: "Relocation Command Center", href: "tools/relocation-command-center.html" },
+      { name: "Grant Funding Radar", href: "tools/grant-funding-radar.html" },
+      { name: "Health Portal (Free)", href: "health/index.html" },
+      { name: "Pet & Family Relocation", href: "tools/pet-family-relocation.html" }
+    ];
+    document.getElementById("portfolio-links").innerHTML = links.map(l =>
+      `<a class="card-link" href="${l.href}"><div class="card"><h3>${l.name}</h3><p>Open →</p></div></a>`
+    ).join("");
+
+    document.getElementById("export-pdf").addEventListener("click", () => CIVIC_PDF.exportBrief("portfolio-sheet"));
+  </script>
+</body>
+</html>

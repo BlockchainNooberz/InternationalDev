@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Live Data Console | Civic Portal</title>
+  <link rel="stylesheet" href="../assets/css/portal.css">
+</head>
+<body>
+  <div class="shell">
+    <div class="topbar">
+      <div class="brand"><div class="brand-mark">CP</div><div><h1>Live Data Console</h1><p>Public APIs with offline fallbacks</p></div></div>
+      <nav class="nav-pills"><a class="pill" href="../index.html">Portal</a></nav>
+    </div>
+
+    <div class="hero">
+      <h2>Connected data feeds</h2>
+      <p>Fetches live data where browser CORS allows; caches results and falls back to reference data offline.</p>
+    </div>
+
+    <div class="grid grid-2">
+      <div class="panel">
+        <div class="panel-header"><h3>Country Lookup</h3><div id="country-status"></div></div>
+        <div class="form-row form-row-2">
+          <div><label>Country</label><input id="country-input" value="Ukraine"></div>
+          <div style="display:flex;align-items:flex-end;"><button class="btn btn-primary" id="fetch-country">Fetch</button></div>
+        </div>
+        <div id="country-result" style="margin-top:12px;"></div>
+      </div>
+      <div class="panel">
+        <div class="panel-header"><h3>EU / UN Grant References</h3><div id="grant-status"></div></div>
+        <button class="btn btn-secondary" id="fetch-grants">Refresh Grants</button>
+        <div id="grant-result" style="margin-top:12px;"></div>
+      </div>
+    </div>
+
+    <div class="panel" style="margin-top:16px;">
+      <div class="panel-header"><h3>Humanitarian Response Plans</h3><div id="hrp-status"></div></div>
+      <button class="btn btn-secondary" id="fetch-hrp">Refresh HRP Data</button>
+      <div id="hrp-result" style="margin-top:12px;"></div>
+    </div>
+
+    <div class="panel" style="margin-top:16px;">
+      <div class="panel-header"><h3>API Integration Notes</h3></div>
+      <ul style="color:var(--muted);font-size:0.9rem;line-height:1.8;padding-left:20px;">
+        <li><strong>REST Countries</strong> — live from browser (population, capital, languages)</li>
+        <li><strong>UN OCHA FTS</strong> — requires server-side proxy due to CORS; reference data shown here</li>
+        <li><strong>EU Funding Portal</strong> — wire via backend in production (<code>api.tech.ec.europa.eu</code>)</li>
+        <li>All fetches cached in <code>localStorage</code> for offline field use</li>
+      </ul>
+    </div>
+  </div>
+  <script src="../assets/js/live-data.js"></script>
+  <script>
+    async function showCountry() {
+      const name = document.getElementById("country-input").value.trim();
+      const data = await CIVIC_LIVE.fetchCountry(name);
+      CIVIC_LIVE.renderStatus(document.getElementById("country-status"), data);
+      document.getElementById("country-result").innerHTML = data.population
+        ? `<table><tr><th>Name</th><td>${data.flag || ""} ${data.name}</td></tr>
+          <tr><th>Capital</th><td>${data.capital}</td></tr>
+          <tr><th>Population</th><td>${data.population.toLocaleString()}</td></tr>
+          <tr><th>Region</th><td>${data.subregion || data.region}</td></tr>
+          <tr><th>Languages</th><td>${data.languages || "—"}</td></tr></table>`
+        : `<p style="color:var(--muted);">Could not fetch — using fallback.</p>`;
+    }
+
+    async function showGrants() {
+      const data = await CIVIC_LIVE.fetchGrants();
+      CIVIC_LIVE.renderStatus(document.getElementById("grant-status"), data);
+      document.getElementById("grant-result").innerHTML = `<table><thead><tr><th>Program</th><th>Donor</th><th>Scale</th><th>Link</th></tr></thead><tbody>${
+        data.rows.map(g => `<tr><td>${g.name}</td><td>${g.donor}</td><td>${g.max}</td><td><a href="${g.url}" target="_blank">Open</a></td></tr>`).join("")
+      }</tbody></table>`;
+    }
+
+    async function showHrp() {
+      const data = await CIVIC_LIVE.fetchHumanitarianSummary();
+      CIVIC_LIVE.renderStatus(document.getElementById("hrp-status"), data);
+      document.getElementById("hrp-result").innerHTML = `<table><thead><tr><th>Country</th><th>Plan</th><th>Requirement</th><th>Funded</th></tr></thead><tbody>${
+        data.rows.map(r => `<tr><td>${r.country}</td><td>${r.plan}</td><td>${r.requirement}</td><td>${r.funded}</td></tr>`).join("")
+      }</tbody></table>`;
+    }
+
+    document.getElementById("fetch-country").addEventListener("click", showCountry);
+    document.getElementById("fetch-grants").addEventListener("click", showGrants);
+    document.getElementById("fetch-hrp").addEventListener("click", showHrp);
+    showCountry(); showGrants(); showHrp();
+  </script>
+</body>
+</html>

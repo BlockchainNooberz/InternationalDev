@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Facility Hub | Health Portal</title>
+  <link rel="stylesheet" href="../../../assets/css/portal.css">
+  <link rel="stylesheet" href="../../assets/css/health.css">
+</head>
+<body>
+  <div class="shell">
+    <div class="topbar">
+      <div class="brand"><div class="brand-mark" style="background:linear-gradient(135deg,var(--health-accent),var(--health-accent-2));">HP</div>
+        <div><h1 id="facility-title">Facility Hub</h1><p id="facility-sub">Free forever · No cost to facilities</p></div>
+      </div>
+      <nav class="nav-pills">
+        <a class="pill" href="../../index.html">Health Portal</a>
+        <a class="pill" href="../../agents/index.html">Agents</a>
+      </nav>
+    </div>
+    <div class="disclaimer"><strong>Operational tools only.</strong> Not medical advice. Clinical decisions remain with licensed staff per national protocols.</div>
+    <div class="hero health-hero" id="facility-hero"></div>
+    <h2 class="section-title">Dashboard Modules <span id="mod-count"></span></h2>
+    <div class="grid grid-3" id="module-grid"></div>
+    <h2 class="section-title">Facility Agents <span>free · offline</span></h2>
+    <div class="grid grid-2" id="agent-grid"></div>
+  </div>
+  <script src="../assets/js/health-data.js"></script>
+  <script>
+    const slug = "mobile-unit";
+    const f = HEALTH_PORTAL.getFacility(slug);
+    document.getElementById("facility-title").textContent = f.icon + " " + f.name;
+    document.getElementById("facility-sub").textContent = f.setting + " · " + f.capacity;
+    document.getElementById("mod-count").textContent = HEALTH_PORTAL.MODULES.length + " modules";
+    document.getElementById("facility-hero").innerHTML = `
+      <h2>${f.name}</h2>
+      <p>Common challenges: ${f.challenges.join(", ")}. Typical settings: ${f.regions.join(", ")}.</p>
+      <div class="hero-tags"><span class="tag tag-free">FREE FOREVER — $0</span>${f.challenges.map(c => '<span class="tag">'+c+'</span>').join('')}</div>`;
+    document.getElementById("module-grid").innerHTML = HEALTH_PORTAL.MODULES.map(m => `
+      <a class="card-link" href="dashboard.html?module=${m.id}"><div class="card">
+        <h3>${m.icon} ${m.name}</h3><p>${m.desc}</p></div></a>`).join("");
+    document.getElementById("agent-grid").innerHTML = HEALTH_PORTAL.AGENTS.slice(0,4).map(a => `
+      <a class="card-link agent-card" href="../agents/index.html?agent=${a.id}&facility=${slug}"><div class="card">
+        <h3>${a.icon} ${a.name}</h3><p>${a.desc}</p></div></a>`).join("");
+  </script>
+</body>
+</html>

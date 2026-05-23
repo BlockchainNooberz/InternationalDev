@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pet & Family Relocation Kit | Civic Portal</title>
+  <link rel="stylesheet" href="../assets/css/portal.css">
+</head>
+<body>
+  <div class="shell">
+    <div class="topbar">
+      <div class="brand"><div class="brand-mark">CP</div><div><h1>Pet & Family Relocation Kit</h1><p>Dog · cat · dependent · housing filters</p></div></div>
+      <nav class="nav-pills">
+        <a class="pill" href="../index.html">Portal</a>
+        <a class="pill" href="relocation-command-center.html">Relocation Center</a>
+      </nav>
+    </div>
+    <div class="hero">
+      <h2>Household: you + father + dog + cat</h2>
+      <p>Filter destinations by pet import complexity, dependent visa rules, and pet-friendly housing availability.</p>
+    </div>
+    <div class="grid grid-2">
+      <div class="panel">
+        <div class="panel-header"><h3>Pet Import Complexity by Country</h3></div>
+        <div id="pet-chart" class="chart-bar-wrap"></div>
+      </div>
+      <div class="panel">
+        <div class="panel-header"><h3>Document Checklist</h3></div>
+        <ul id="pet-checklist" style="list-style:none;display:flex;flex-direction:column;gap:8px;font-size:0.9rem;"></ul>
+      </div>
+    </div>
+    <div class="panel" style="margin-top:16px;">
+      <div class="panel-header"><h3>Country Pet & Family Matrix</h3></div>
+      <table id="matrix-table">
+        <thead><tr><th>Country</th><th>Pet Import</th><th>Quarantine</th><th>Dependent Visa</th><th>Pet-Friendly Housing</th></tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </div>
+  <script>
+    const matrix = [
+      { country: "🇵🇱 Poland", import: "EU standard", quarantine: "None", dependent: "Yes", housing: "Good" },
+      { country: "🇪🇪 Estonia", import: "EU standard", quarantine: "None", dependent: "Yes", housing: "Moderate" },
+      { country: "🇷🇴 Romania", import: "EU standard", quarantine: "None", dependent: "Yes", housing: "Good" },
+      { country: "🇫🇮 Finland", import: "EU + tapeworm", quarantine: "None", dependent: "Yes", housing: "Moderate" },
+      { country: "🇮🇸 Iceland", import: "Strict", quarantine: "4 weeks+", dependent: "Yes", housing: "Limited" },
+      { country: "🇸🇬 Singapore", import: "Strict", quarantine: "Required", dependent: "Case-by-case", housing: "Limited" },
+      { country: "🇰🇷 South Korea", import: "Moderate", quarantine: "Required", dependent: "Yes", housing: "Moderate" },
+      { country: "🇳🇵 Nepal", import: "Basic", quarantine: "Minimal", dependent: "Limited", housing: "Limited" }
+    ];
+    document.querySelector("#matrix-table tbody").innerHTML = matrix.map(m =>
+      `<tr><td>${m.country}</td><td>${m.import}</td><td>${m.quarantine}</td><td>${m.dependent}</td><td>${m.housing}</td></tr>`
+    ).join("");
+    const complexity = [
+      { label: "Poland", value: 20 }, { label: "Estonia", value: 22 }, { label: "Romania", value: 25 },
+      { label: "Finland", value: 35 }, { label: "Singapore", value: 85 }, { label: "Iceland", value: 90 }
+    ];
+    const max = Math.max(...complexity.map(c => c.value));
+    document.getElementById("pet-chart").innerHTML = complexity.map(c =>
+      `<div class="chart-row"><span>${c.label}</span><div class="chart-bar"><div class="chart-fill" style="width:${c.value/max*100}%;background:${c.value>70?'var(--danger)':'var(--accent)'}"></div></div><span>${c.value}</span></div>`
+    ).join("");
+    ["ISO microchip both pets", "Rabies vaccination (21+ days before travel)", "EU health certificate (EU destinations)", "Airline pet policy confirmed", "Pet-friendly lease or NGO housing letter", "Vet records in English + offline copies"].forEach(item => {
+      document.getElementById("pet-checklist").innerHTML += `<li><label><input type="checkbox"> ${item}</label></li>`;
+    });
+  </script>
+</body>
+</html>

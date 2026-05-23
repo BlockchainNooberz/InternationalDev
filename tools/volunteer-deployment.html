@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Volunteer Deployment Planner | Civic Portal</title>
+  <link rel="stylesheet" href="../assets/css/portal.css">
+</head>
+<body>
+  <div class="shell">
+    <div class="topbar">
+      <div class="brand"><div class="brand-mark">CP</div><div><h1>Volunteer Deployment Planner</h1><p>Skills matching · logistics · safety checklists</p></div></div>
+      <nav class="nav-pills"><a class="pill" href="../index.html">Portal</a></nav>
+    </div>
+    <div class="grid grid-2">
+      <div class="panel">
+        <div class="panel-header"><h3>Volunteer Profile</h3></div>
+        <div class="form-row"><label>Skills</label><input id="skills" placeholder="e.g. logistics, GIS, translation, medical, IT"></div>
+        <div class="form-row form-row-2">
+          <div><label>Availability</label><select><option>Immediate</option><option>30 days</option><option>90 days</option></select></div>
+          <div><label>Risk tolerance</label><select><option>Low</option><option>Medium</option><option>High (field)</option></select></div>
+        </div>
+        <button class="btn btn-primary" id="match-btn">Find Deployments</button>
+      </div>
+      <div class="panel">
+        <div class="panel-header"><h3>Pre-Deployment Checklist</h3></div>
+        <ul id="checklist" style="list-style:none;display:flex;flex-direction:column;gap:8px;color:var(--muted);font-size:0.9rem;"></ul>
+      </div>
+    </div>
+    <div class="panel" style="margin-top:16px;">
+      <div class="panel-header"><h3>Recommended Deployments</h3></div>
+      <div id="deployments"></div>
+    </div>
+  </div>
+  <script>
+    const checklist = ["Passport valid 6+ months", "Travel insurance confirmed", "Security briefing completed", "Local SIM / comms plan", "Emergency contacts registered", "Vaccinations verified", "Code of conduct signed", "Offline maps downloaded"];
+    document.getElementById("checklist").innerHTML = checklist.map((c,i) => `<li><label><input type="checkbox"> ${c}</label></li>`).join("");
+    const deployments = [
+      { org: "UNHCR Poland", role: "Registration support", loc: "Warsaw / border", dur: "3 mo" },
+      { org: "Red Cross Romania", role: "Logistics coordinator", loc: "Bucharest", dur: "6 mo" },
+      { org: "GIZ Moldova", role: "Community liaison", loc: "Chișinău", dur: "12 mo" },
+      { org: "Nepal Red Cross", role: "Field assessment", loc: "Kathmandu", dur: "4 mo" },
+      { org: "Singapore IPC", role: "Program analyst", loc: "Singapore", dur: "6 mo" }
+    ];
+    document.getElementById("match-btn").addEventListener("click", () => {
+      document.getElementById("deployments").innerHTML = `<table><thead><tr><th>Organization</th><th>Role</th><th>Location</th><th>Duration</th></tr></thead><tbody>${
+        deployments.map(d => `<tr><td>${d.org}</td><td>${d.role}</td><td>${d.loc}</td><td>${d.dur}</td></tr>`).join("")
+      }</tbody></table>`;
+    });
+  </script>
+</body>
+</html>

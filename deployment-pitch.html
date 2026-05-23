@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Immediate Deployment Pitch | Civic Portal</title>
+  <link rel="stylesheet" href="assets/css/portal.css">
+  <link rel="stylesheet" href="assets/css/portfolio.css">
+</head>
+<body>
+  <div class="shell">
+    <div class="topbar no-print">
+      <div class="brand"><div class="brand-mark">✈</div><div><h1>Immediate Deployment Pitch</h1><p>Send tonight — edit contact block below</p></div></div>
+      <nav class="nav-pills">
+        <a class="pill" href="index.html">Portal</a>
+        <a class="pill" href="tools/deployment-outreach.html">50+ Org List</a>
+        <a class="pill" href="portfolio.html">Full Portfolio</a>
+        <button class="btn btn-primary" id="save-profile">Save Contact Info</button>
+        <button class="btn btn-secondary" id="export-pdf">Export PDF</button>
+      </nav>
+    </div>
+
+    <div class="panel no-print" style="margin-bottom:16px;">
+      <div class="panel-header"><h3>Your Contact Block</h3></div>
+      <div class="form-row form-row-2">
+        <div><label>Full name</label><input id="p-name"></div>
+        <div><label>Email</label><input id="p-email"></div>
+      </div>
+      <div class="form-row form-row-2">
+        <div><label>Phone / WhatsApp</label><input id="p-phone"></div>
+        <div><label>Signal</label><input id="p-signal"></div>
+      </div>
+      <div class="form-row form-row-2">
+        <div><label>LinkedIn URL</label><input id="p-linkedin"></div>
+        <div><label>Portfolio URL (hosted)</label><input id="p-portfolio" placeholder="https://yoursite.github.io/portfolio.html"></div>
+      </div>
+      <div class="form-row">
+        <label>Household / relocation need</label>
+        <input id="p-household" value="Self + father (dependent) + dog + cat — full package required">
+      </div>
+    </div>
+
+    <article class="portfolio-sheet" id="pitch-sheet">
+      <header class="portfolio-header">
+        <div>
+          <p class="portfolio-eyebrow">Immediate availability · Pro-bono acceptable · Global deploy</p>
+          <h2 id="pitch-name">Deployment Candidate — Operations & Civic Tech</h2>
+          <p class="portfolio-lead">
+            Seeking <strong>sponsored relocation</strong> (visa, flights, housing) in exchange for immediate field or HQ contribution.
+            Open to UN, EU, US-allied gov contractors, emergency INGOs, and private deploy roles — any region, any lawful work.
+          </p>
+        </div>
+        <div class="portfolio-contact" id="pitch-contact"></div>
+      </header>
+
+      <section class="portfolio-section">
+        <h3>Offer</h3>
+        <ul class="portfolio-list">
+          <li><strong>Availability:</strong> <span id="pitch-avail">Immediate — 48–72 hr notice once visa confirmed</span></li>
+          <li><strong>Compensation:</strong> Pro-bono or local stipend OK if full relocation package provided</li>
+          <li><strong>Roles:</strong> Field ops, logistics, IT, dashboards, clinic admin tools, grant reporting, volunteer coordination</li>
+          <li><strong>Household:</strong> <span id="pitch-household"></span></li>
+          <li><strong>Travel:</strong> Flexible — commercial direct, org charter, UN humanitarian air, contractor rotator — any lawful employer-arranged transport (not requiring luxury jet)</li>
+        </ul>
+      </section>
+
+      <section class="portfolio-section">
+        <h3>Experience — Andrew Elston</h3>
+        <ul class="portfolio-list" id="skills-list"></ul>
+      </section>
+
+      <section class="portfolio-section">
+        <h3>Portfolio Highlights</h3>
+        <ul class="portfolio-list">
+          <li>Civic Portal — 32 country gov/NGO dashboards, offline-capable</li>
+          <li>Health Portal — free clinic dashboards & agents for underserved facilities ($0 forever)</li>
+          <li>Ukraine Recovery Center, relocation CRM, sanctions-safe humanitarian workflows</li>
+        </ul>
+      </section>
+
+      <section class="portfolio-section">
+        <h3>Fastest Paths I'm Pursuing</h3>
+        <div class="competency-grid">
+          <span class="tag">UN Volunteers (UNV)</span>
+          <span class="tag">MSF / IRC / NRC / ICRC</span>
+          <span class="tag">USAID Implementers</span>
+          <span class="tag">GIZ / EU programmes</span>
+          <span class="tag">Defense/Infrastructure primes</span>
+          <span class="tag">KOICA / JICA / EPIK</span>
+          <span class="tag">UNHAS / org charter</span>
+        </div>
+      </section>
+
+      <footer class="portfolio-footer">
+        <p id="pitch-footer-contact"></p>
+        <p class="print-only">Generated <span id="print-date"></span></p>
+      </footer>
+    </article>
+  </div>
+  <script src="assets/js/outreach-data.js"></script>
+  <script src="assets/js/andrew-profile.js"></script>
+  <script src="assets/js/pdf-export.js"></script>
+  <script>
+    const fields = ["name","email","phone","signal","linkedin","portfolioUrl","household","availability"];
+    const ids = { name:"p-name", email:"p-email", phone:"p-phone", signal:"p-signal", linkedin:"p-linkedin", portfolioUrl:"p-portfolio", household:"p-household" };
+
+    function loadForm() {
+      const p = { ...OUTREACH.defaultProfile, ...OUTREACH.loadProfile() };
+      fields.forEach(f => { const el = document.getElementById(ids[f]); if (el) el.value = p[f] || ""; });
+      renderPitch(p);
+    }
+
+    function getFormProfile() {
+      const p = {};
+      fields.forEach(f => { const el = document.getElementById(ids[f]); if (el) p[f] = el.value; });
+      p.availability = OUTREACH.defaultProfile.availability;
+      p.offer = OUTREACH.defaultProfile.offer;
+      return p;
+    }
+
+    function renderPitch(p) {
+      document.getElementById("pitch-name").textContent = p.name + " — Immediate International Deployment";
+      document.getElementById("pitch-household").textContent = p.household;
+      document.getElementById("pitch-contact").innerHTML = `
+        <strong>${p.name}</strong>
+        <p>${p.phone}</p><p>${p.email}</p><p>${p.address}</p>
+        <p style="margin-top:8px;">${p.linkedin}</p>`;
+      document.getElementById("pitch-footer-contact").textContent = p.signature.replace(/\n/g, " · ");
+      document.getElementById("print-date").textContent = new Date().toLocaleDateString();
+      if (document.getElementById("skills-list") && window.ANDREW_PROFILE) {
+        document.getElementById("skills-list").innerHTML = ANDREW_PROFILE.skillsBlock.split("\n").filter(Boolean).map(l => `<li>${l.replace(/^• /,"")}</li>`).join("");
+      }
+    }
+
+    document.getElementById("save-profile").addEventListener("click", () => {
+      OUTREACH.saveProfile(getFormProfile());
+      renderPitch(getFormProfile());
+      alert("Contact saved locally — used across outreach tools.");
+    });
+    document.getElementById("export-pdf").addEventListener("click", () => CIVIC_PDF.exportBrief("pitch-sheet"));
+    loadForm();
+  </script>
+</body>
+</html>

@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Offline Field Agent | Civic Portal</title>
+  <link rel="stylesheet" href="../assets/css/portal.css">
+</head>
+<body>
+  <div class="shell">
+    <div class="topbar">
+      <div class="brand"><div class="brand-mark">CP</div><div><h1>Offline Field Agent</h1><p>Low-connectivity humanitarian assistant</p></div></div>
+      <nav class="nav-pills"><a class="pill" href="../index.html">Portal</a></nav>
+    </div>
+    <div class="grid grid-2">
+      <div class="panel">
+        <div class="panel-header"><h3>Field Agent Chat</h3><span class="badge badge-green">Offline</span></div>
+        <div class="ai-chat" id="ai-chat" style="min-height:320px;"></div>
+        <div class="toolbar" style="margin-top:10px;">
+          <input type="text" id="ai-input" placeholder="Ask about ops, grants, relocation, compliance..." style="flex:1;">
+          <button class="btn btn-primary" id="ai-send">Send</button>
+        </div>
+      </div>
+      <div class="panel">
+        <div class="panel-header"><h3>Quick Prompts</h3></div>
+        <div class="toolbar" style="flex-direction:column;align-items:stretch;">
+          <button class="btn btn-secondary quick-prompt">What NGOs offer relocation packages?</button>
+          <button class="btn btn-secondary quick-prompt">Humanitarian cluster coordination basics</button>
+          <button class="btn btn-secondary quick-prompt">EU grant opportunities for Eastern Europe</button>
+          <button class="btn btn-secondary quick-prompt">Pet import rules for EU countries</button>
+          <button class="btn btn-secondary quick-prompt">Sanctions screening for humanitarian aid</button>
+        </div>
+        <div class="panel-header" style="margin-top:20px;"><h3>Offline Data Cache</h3></div>
+        <p style="color:var(--muted);font-size:0.88rem;">This page works without network access. Knowledge base is embedded in <code>offline-ai.js</code>. Sync live data when connectivity returns.</p>
+        <button class="btn btn-secondary" id="cache-btn" style="margin-top:10px;">Simulate Cache Sync</button>
+        <p id="cache-status" style="margin-top:8px;font-size:0.85rem;color:var(--success);"></p>
+      </div>
+    </div>
+  </div>
+  <script src="../assets/js/offline-ai.js"></script>
+  <script>
+    CIVIC_OFFLINE_AI.mountChat({ greeting: "Field agent online (offline mode). Ask about humanitarian ops, relocation, grants, or compliance." });
+    document.querySelectorAll(".quick-prompt").forEach(btn => {
+      btn.addEventListener("click", () => {
+        document.getElementById("ai-input").value = btn.textContent;
+        document.getElementById("ai-send").click();
+      });
+    });
+    document.getElementById("cache-btn").addEventListener("click", () => {
+      document.getElementById("cache-status").textContent = "Cache synced at " + new Date().toLocaleString() + " — 32 country profiles, 8 tools, knowledge base.";
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Health Portal — Free for Underserved Facilities</title>
+  <link rel="stylesheet" href="../assets/css/portal.css">
+  <link rel="stylesheet" href="assets/css/health.css">
+</head>
+<body>
+  <div class="shell">
+    <div class="topbar">
+      <div class="brand">
+        <div class="brand-mark" style="background:linear-gradient(135deg,var(--health-accent),var(--health-accent-2));">HP</div>
+        <div>
+          <h1>Health Portal</h1>
+          <p>Free dashboards & agents for underserved health facilities — $0 forever</p>
+        </div>
+      </div>
+      <nav class="nav-pills">
+        <a class="pill" href="../index.html">Civic Portal</a>
+        <a class="pill" href="agents/index.html">All Agents</a>
+        <a class="pill" href="#register">Register Facility</a>
+      </nav>
+    </div>
+
+    <section class="hero health-hero">
+      <h2>Operational tools for clinics that can't afford software</h2>
+      <p>
+        Patient flow, pharmacy inventory, staff scheduling, referrals, cold chain, donor reporting —
+        plus offline AI agents for facility administrators. Offered to underserved health facilities
+        at <strong>no cost ever</strong>. No subscription. No trial that expires. No upsell.
+      </p>
+      <div class="hero-tags">
+        <span class="tag tag-free">FREE FOREVER — $0</span>
+        <span class="tag">6 Facility Types</span>
+        <span class="tag">12 Dashboard Modules</span>
+        <span class="tag">6 Offline Agents</span>
+        <span class="tag">Works Offline</span>
+        <span class="tag">Data Stays Local</span>
+      </div>
+    </section>
+
+    <div class="disclaimer">
+      <strong>Important:</strong> These tools support clinic operations, inventory, scheduling, and reporting —
+      they do <em>not</em> provide medical diagnosis or treatment advice. All clinical decisions remain with
+      licensed health workers following national and WHO protocols.
+    </div>
+
+    <div class="stats-row" id="health-stats"></div>
+
+    <h2 class="section-title">Facility Types <span>pick your setting</span></h2>
+    <div class="grid grid-3" id="facility-grid"></div>
+
+    <h2 class="section-title">Offline Agents <span>free administrative assistants</span></h2>
+    <div class="grid grid-3" id="agent-grid"></div>
+
+    <h2 class="section-title" id="register">Register Your Facility <span>optional · local only</span></h2>
+    <div class="facility-setup">
+      <p style="color:var(--muted);font-size:0.9rem;margin-bottom:12px;">Names your dashboards locally in your browser. No account, no cloud, no payment.</p>
+      <div class="form-row form-row-2">
+        <div><label>Facility name</label><input id="reg-name" placeholder="e.g. St. Mary's Rural Health Center"></div>
+        <div><label>Country / region</label><input id="reg-region" placeholder="e.g. Nepal, Gandaki Province"></div>
+      </div>
+      <div class="form-row form-row-2">
+        <div><label>Facility type</label><select id="reg-type"></select></div>
+        <div><label>Estimated daily visits</label><input id="reg-visits" type="number" placeholder="e.g. 80"></div>
+      </div>
+      <button class="btn btn-primary" id="reg-save">Save Locally (Free)</button>
+      <p id="reg-status" style="margin-top:10px;color:var(--success);font-size:0.88rem;"></p>
+    </div>
+
+    <div class="footer">
+      Health Portal · Free for underserved facilities forever · Part of Civic Portal · No vendor lock-in
+    </div>
+  </div>
+
+  <script src="assets/js/health-data.js"></script>
+  <script>
+    document.getElementById("health-stats").innerHTML = [
+      { label: "Price to Facilities", value: "$0" },
+      { label: "Facility Types", value: HEALTH_PORTAL.FACILITIES.length },
+      { label: "Dashboard Modules", value: HEALTH_PORTAL.MODULES.length },
+      { label: "Offline Agents", value: HEALTH_PORTAL.AGENTS.length },
+      { label: "Subscription", value: "Never" },
+      { label: "Data Storage", value: "Your browser" }
+    ].map(s => `<div class="stat"><div class="stat-label">${s.label}</div><div class="stat-value">${s.value}</div></div>`).join("");
+
+    document.getElementById("facility-grid").innerHTML = HEALTH_PORTAL.FACILITIES.map(f => `
+      <a class="card-link" href="facilities/${f.slug}/index.html">
+        <div class="card">
+          <h3>${f.icon} ${f.name}</h3>
+          <p>${f.setting}</p>
+          <p style="font-size:0.82rem;">${f.capacity}</p>
+          <div class="card-meta"><span class="badge health-badge">Free</span><span>${HEALTH_PORTAL.MODULES.length} modules</span></div>
+        </div>
+      </a>`).join("");
+
+    document.getElementById("agent-grid").innerHTML = HEALTH_PORTAL.AGENTS.map(a => `
+      <a class="card-link agent-card" href="agents/index.html?agent=${a.id}">
+        <div class="card"><h3>${a.icon} ${a.name}</h3><p>${a.desc}</p></div>
+      </a>`).join("");
+
+    const typeSel = document.getElementById("reg-type");
+    typeSel.innerHTML = HEALTH_PORTAL.FACILITIES.map(f => `<option value="${f.slug}">${f.name}</option>`).join("");
+
+    const saved = HEALTH_PORTAL.loadFacilityProfile();
+    if (saved.name) {
+      document.getElementById("reg-name").value = saved.name;
+      document.getElementById("reg-region").value = saved.region || "";
+      document.getElementById("reg-type").value = saved.type || HEALTH_PORTAL.FACILITIES[0].slug;
+      document.getElementById("reg-visits").value = saved.visits || "";
+      document.getElementById("reg-status").textContent = "Facility profile loaded — " + saved.name;
+    }
+
+    document.getElementById("reg-save").addEventListener("click", () => {
+      const profile = {
+        name: document.getElementById("reg-name").value.trim(),
+        region: document.getElementById("reg-region").value.trim(),
+        type: document.getElementById("reg-type").value,
+        visits: document.getElementById("reg-visits").value,
+        registered: new Date().toISOString()
+      };
+      HEALTH_PORTAL.saveFacilityProfile(profile);
+      document.getElementById("reg-status").textContent = "Saved locally — free forever. Open your facility hub to start.";
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sanctions Screening Desk | Civic Portal</title>
+  <link rel="stylesheet" href="../assets/css/portal.css">
+</head>
+<body>
+  <div class="shell">
+    <div class="topbar">
+      <div class="brand"><div class="brand-mark">CP</div><div><h1>US Sanctions Screening Desk</h1><p>OFAC / EU compliance · permitted humanitarian corridors only</p></div></div>
+      <nav class="nav-pills">
+        <a class="pill" href="../index.html">Portal</a>
+        <a class="pill" href="../europe/russia/index.html">Russia Hub</a>
+      </nav>
+    </div>
+    <div class="hero" style="border-color:var(--warning);">
+      <h2>Compliance reference only</h2>
+      <p>This tool supports US-person compliance workflows for permitted humanitarian and legal screening. It is not operational guidance for restricted jurisdictions. Always consult qualified legal counsel.</p>
+    </div>
+    <div class="grid grid-2">
+      <div class="panel">
+        <div class="panel-header"><h3>Entity Screening</h3></div>
+        <div class="form-row"><label>Entity / Individual name</label><input id="entity-name" placeholder="Enter name to screen"></div>
+        <div class="form-row"><label>Transaction type</label><select id="tx-type"><option>Humanitarian aid</option><option>Medical supplies</option><option>Food assistance</option><option>Financial transfer</option><option>Other</option></select></div>
+        <button class="btn btn-primary" id="screen-btn">Run Screening</button>
+        <div id="screen-result" style="margin-top:16px;"></div>
+      </div>
+      <div class="panel">
+        <div class="panel-header"><h3>Screening Checklist</h3></div>
+        <ul style="list-style:none;display:flex;flex-direction:column;gap:8px;font-size:0.9rem;color:var(--muted);">
+          <li>☐ OFAC SDN list check</li>
+          <li>☐ EU Consolidated List check</li>
+          <li>☐ Humanitarian exemption documentation</li>
+          <li>☐ End-user certificate on file</li>
+          <li>☐ Audit trail / case ID assigned</li>
+          <li>☐ Legal review for non-standard corridors</li>
+        </ul>
+      </div>
+    </div>
+    <div class="panel" style="margin-top:16px;">
+      <div class="panel-header"><h3>Recent Screening Log (demo)</h3></div>
+      <table>
+        <thead><tr><th>Case ID</th><th>Entity</th><th>Type</th><th>Result</th><th>Date</th></tr></thead>
+        <tbody>
+          <tr><td>SCR-1042</td><td>Medical NGO Partner A</td><td>Medical supplies</td><td><span class="badge badge-green">Clear</span></td><td>2026-05-20</td></tr>
+          <tr><td>SCR-1041</td><td>Logistics Vendor B</td><td>Food assistance</td><td><span class="badge badge-amber">Review</span></td><td>2026-05-18</td></tr>
+          <tr><td>SCR-1040</td><td>Unknown intermediary</td><td>Financial transfer</td><td><span class="badge badge-red">Hold</span></td><td>2026-05-15</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <script>
+    document.getElementById("screen-btn").addEventListener("click", () => {
+      const name = document.getElementById("entity-name").value.trim();
+      if (!name) { alert("Enter an entity name"); return; }
+      const hash = name.length % 3;
+      const results = [
+        { status: "Clear", cls: "green", msg: "No exact match on OFAC SDN or EU Consolidated List. Proceed with standard documentation." },
+        { status: "Review", cls: "amber", msg: "Partial match detected. Escalate to compliance officer before disbursement." },
+        { status: "Hold", cls: "red", msg: "Potential match. Do not proceed until legal clearance." }
+      ];
+      const r = results[hash];
+      document.getElementById("screen-result").innerHTML = `<div class="card"><span class="badge badge-${r.cls}">${r.status}</span><p style="margin-top:8px;">${r.msg}</p></div>`;
+    });
+  </script>
+</body>
+</html>

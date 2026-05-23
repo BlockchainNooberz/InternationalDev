@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sponsorship Pipeline CRM | Civic Portal</title>
+  <link rel="stylesheet" href="../assets/css/portal.css">
+</head>
+<body>
+  <div class="shell">
+    <div class="topbar">
+      <div class="brand"><div class="brand-mark">CP</div><div><h1>Sponsorship Pipeline CRM</h1><p>Track orgs · follow-ups · deployment outreach</p></div></div>
+      <nav class="nav-pills">
+        <a class="pill" href="../index.html">Portal</a>
+        <a class="pill" href="deployment-outreach.html">50+ Org Hub</a>
+        <a class="pill" href="../deployment-pitch.html">Pitch Page</a>
+      </nav>
+    </div>
+    <div class="stats-row" id="pipeline-stats"></div>
+
+    <div class="grid grid-2">
+      <div class="panel">
+        <div class="panel-header"><h3>Add Prospect</h3></div>
+        <div class="form-row form-row-2">
+          <div><label>Organization</label><input id="org-name" placeholder="NGO / UN / prime contractor"></div>
+          <div><label>Country</label><input id="org-country" placeholder="e.g. Poland / Global"></div>
+        </div>
+        <div class="form-row form-row-2">
+          <div><label>Package</label><select id="org-package">
+            <option>Relocation + housing + flights</option>
+            <option>Visa sponsorship only</option>
+            <option>Full expat package</option>
+            <option>UNV / volunteer terms</option>
+            <option>Pro-bono + housing</option>
+          </select></div>
+          <div><label>Stage</label><select id="org-stage">
+            <option>Research</option><option>Contacted</option><option>Interview</option><option>Offer</option><option>Rejected</option>
+          </select></div>
+        </div>
+        <div class="form-row"><label>Notes / follow-up date</label><input id="org-notes" placeholder="e.g. Follow up May 30 — used coldEmail template"></div>
+        <button class="btn btn-primary" id="add-btn">Add to Pipeline</button>
+        <button class="btn btn-secondary" id="import-outreach">Import all from Outreach Hub</button>
+      </div>
+      <div class="panel">
+        <div class="panel-header"><h3>Quick Follow-up</h3></div>
+        <select id="fu-org" style="margin-bottom:8px;"></select>
+        <select id="fu-template" style="margin-bottom:8px;">
+          <option value="followUp7">7-day follow-up</option>
+          <option value="followUp14">14-day follow-up</option>
+          <option value="coldEmail">New cold email</option>
+        </select>
+        <button class="btn btn-primary" id="fu-gen">Generate Email</button>
+        <button class="btn btn-secondary" id="fu-copy">Copy to Clipboard</button>
+        <pre id="fu-preview" style="margin-top:12px;background:var(--surface-2);padding:10px;border-radius:8px;font-size:0.8rem;white-space:pre-wrap;max-height:200px;overflow:auto;"></pre>
+      </div>
+    </div>
+
+    <div class="panel" style="margin-top:16px;">
+      <div class="panel-header"><h3>Pipeline Board</h3></div>
+      <div id="pipeline-table"></div>
+    </div>
+  </div>
+  <script src="../assets/js/outreach-data.js"></script>
+  <script src="../assets/js/andrew-profile.js"></script>
+  <script src="../assets/js/email-templates.js"></script>
+  <script>
+    let pipeline = JSON.parse(localStorage.getItem("sponsorship-pipeline") || "[]");
+    if (!pipeline.length) {
+      pipeline = [
+        { org: "UN Volunteers (UNV)", country: "Global", package: "UNV + DSA + travel", stage: "Research", notes: "Register on VMAM first" },
+        { org: "MSF — Non-medical field", country: "Global", package: "Field per diem + travel", stage: "Research", notes: "" },
+        { org: "NRC — Norwegian Refugee Council", country: "Ukraine/Poland", package: "International terms", stage: "Research", notes: "" },
+        { org: "GIZ", country: "Germany/Global", package: "Expat package", stage: "Research", notes: "" },
+        { org: "KBR Government Solutions", country: "Global", package: "Full expat", stage: "Research", notes: "" }
+      ];
+    }
+
+    function save() { localStorage.setItem("sponsorship-pipeline", JSON.stringify(pipeline)); }
+
+    function renderFuSelect() {
+      const sel = document.getElementById("fu-org");
+      sel.innerHTML = pipeline.map((p,i) => `<option value="${i}">${p.org} (${p.stage})</option>`).join("") || '<option>No prospects yet</option>';
+    }
+
+    function render() {
+      const stages = ["Research", "Contacted", "Interview", "Offer", "Rejected"];
+      document.getElementById("pipeline-stats").innerHTML = stages.map(s =>
+        `<div class="stat"><div class="stat-label">${s}</div><div class="stat-value">${pipeline.filter(p => p.stage === s).length}</div></div>`
+      ).join("") + `<div class="stat"><div class="stat-label">Total</div><div class="stat-value">${pipeline.length}</div></div>`;
+
+      document.getElementById("pipeline-table").innerHTML = `<table><thead><tr>
+        <th>Organization</th><th>Country</th><th>Package</th><th>Stage</th><th>Notes</th><th></th>
+      </tr></thead><tbody>${pipeline.map((p,i) => `<tr>
+        <td>${p.org}</td><td>${p.country}</td><td>${p.package}</td>
+        <td><select data-stage="${i}" class="stage-sel">${stages.map(s => `<option ${p.stage===s?'selected':''}>${s}</option>`).join("")}</select></td>
+        <td style="font-size:0.8rem;color:var(--muted);">${p.notes || "—"}</td>
+        <td><button class="btn btn-secondary" data-i="${i}" style="padding:4px 8px;font-size:0.72rem;">Remove</button></td>
+      </tr>`).join("")}</tbody></table>`;
+
+      document.querySelectorAll(".stage-sel").forEach(sel => sel.addEventListener("change", () => {
+        pipeline[+sel.dataset.stage].stage = sel.value; save();
+      }));
+      document.querySelectorAll("[data-i]").forEach(btn => btn.addEventListener("click", () => {
+        pipeline.splice(+btn.dataset.i, 1); save(); render(); renderFuSelect();
+      }));
+      renderFuSelect();
+    }
+
+    document.getElementById("add-btn").addEventListener("click", () => {
+      const org = document.getElementById("org-name").value.trim();
+      if (!org) return;
+      pipeline.push({
+        org,
+        country: document.getElementById("org-country").value.trim() || "TBD",
+        package: document.getElementById("org-package").value,
+        stage: document.getElementById("org-stage").value,
+        notes: document.getElementById("org-notes").value.trim()
+      });
+      save(); render();
+      document.getElementById("org-name").value = "";
+      document.getElementById("org-notes").value = "";
+    });
+
+    document.getElementById("import-outreach").addEventListener("click", () => {
+      const existing = new Set(pipeline.map(p => p.org));
+      let added = 0;
+      OUTREACH.ORGANIZATIONS.forEach(o => {
+        if (!existing.has(o.name)) {
+          pipeline.push({ org: o.name, country: o.country, package: o.package, stage: "Research", notes: o.url });
+          added++;
+        }
+      });
+      save(); render();
+      alert("Added " + added + " orgs from outreach hub.");
+    });
+
+    function genFollowUp() {
+      const idx = document.getElementById("fu-org").value;
+      if (!pipeline[idx]) return;
+      const p = pipeline[idx];
+      const key = document.getElementById("fu-template").value;
+      const filled = OUTREACH_TEMPLATES.fill(key, OUTREACH.loadProfile(), { org: p.org, lastContactDate: new Date().toLocaleDateString() });
+      document.getElementById("fu-preview").textContent = "Subject: " + filled.subject + "\n\n" + filled.body;
+      return filled;
+    }
+    document.getElementById("fu-gen").addEventListener("click", genFollowUp);
+    document.getElementById("fu-copy").addEventListener("click", () => {
+      const t = document.getElementById("fu-preview").textContent;
+      OUTREACH_TEMPLATES.copyToClipboard(t);
+    });
+
+    render();
+  </script>
+</body>
+</html>

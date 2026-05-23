@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Relocation Command Center | Civic Portal</title>
+  <link rel="stylesheet" href="../assets/css/portal.css">
+</head>
+<body>
+  <div class="shell">
+    <div class="topbar">
+      <div class="brand">
+        <div class="brand-mark">CP</div>
+        <div><h1>Relocation Command Center</h1><p>Visa pathways · sponsors · housing · family packages</p></div>
+      </div>
+      <nav class="nav-pills">
+        <a class="pill" href="../index.html">Portal</a>
+        <a class="pill" href="sponsorship-pipeline.html">Sponsors</a>
+        <a class="pill" href="pet-family-relocation.html">Pets & Family</a>
+      </nav>
+    </div>
+
+    <div class="grid grid-2">
+      <div class="panel">
+        <div class="panel-header"><h3>Target Country Shortlist</h3></div>
+        <div class="form-row form-row-2">
+          <div><label>Region</label><select id="region-filter"><option value="all">All</option><option value="europe">Europe</option><option value="asia">Asia</option></select></div>
+          <div><label>Priority</label><select id="priority-filter"><option value="all">All</option><option value="priority">Priority only</option></select></div>
+        </div>
+        <div id="country-list"></div>
+      </div>
+      <div class="panel">
+        <div class="panel-header"><h3>Relocation Readiness Scorecard</h3></div>
+        <div class="form-row">
+          <label>Household</label>
+          <select id="household"><option>Self + father + dog + cat</option><option>Self only</option><option>Family of 3+</option></select>
+        </div>
+        <div class="form-row form-row-2">
+          <div><label>Work model</label><select id="work-model"><option>Volunteer / pro-bono + sponsorship</option><option>Full employment</option><option>Consultant / contractor</option></select></div>
+          <div><label>Timeline</label><select id="timeline"><option>ASAP (&lt; 90 days)</option><option>3–6 months</option><option>6–12 months</option></select></div>
+        </div>
+        <button class="btn btn-primary" id="score-btn">Calculate Readiness</button>
+        <div id="score-result" style="margin-top:16px;"></div>
+      </div>
+    </div>
+
+    <div class="panel" style="margin-top:16px;">
+      <div class="panel-header"><h3>Visa & Sponsorship Pathways</h3></div>
+      <table id="pathway-table">
+        <thead><tr><th>Country</th><th>Pathway</th><th>Sponsor Type</th><th>Pet OK?</th><th>Est. Timeline</th></tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+
+    <div class="panel" style="margin-top:16px;">
+      <div class="panel-header"><h3>Offline Relocation Advisor</h3></div>
+      <div class="ai-chat" id="ai-chat"></div>
+      <div class="toolbar" style="margin-top:10px;">
+        <input type="text" id="ai-input" placeholder="Ask about visas, sponsors, housing with pets..." style="flex:1;">
+        <button class="btn btn-primary" id="ai-send">Ask</button>
+      </div>
+    </div>
+  </div>
+  <script src="../assets/js/country-data.js"></script>
+  <script src="../assets/js/offline-ai.js"></script>
+  <script>
+    const pathways = [
+      { country: "Estonia", pathway: "Startup / tech visa", sponsor: "Employer or incubator", pets: "Yes (EU rules)", time: "2–4 mo" },
+      { country: "Finland", pathway: "Specialist residence permit", sponsor: "NGO / municipality / employer", pets: "Yes (EU rules)", time: "3–6 mo" },
+      { country: "Poland", pathway: "Work permit + temporary stay", sponsor: "NGO implementing partner", pets: "Yes (EU rules)", time: "2–5 mo" },
+      { country: "Romania", pathway: "Work / volunteer permit", sponsor: "EU-funded NGO", pets: "Yes (EU rules)", time: "2–4 mo" },
+      { country: "Ukraine", pathway: "Humanitarian assignment", sponsor: "UN / INGO with duty station", pets: "Case-by-case", time: "1–3 mo" },
+      { country: "Singapore", pathway: "Employment Pass / S Pass", sponsor: "Registered employer", pets: "Quarantine required", time: "4–8 mo" },
+      { country: "South Korea", pathway: "E-7 / volunteer visa", sponsor: "NGO / KOICA partner", pets: "Quarantine required", time: "4–7 mo" },
+      { country: "Nepal", pathway: "NGO volunteer permit", sponsor: "Registered INGO", pets: "Limited", time: "1–2 mo" },
+      { country: "Iceland", pathway: "Work permit", sponsor: "Employer / research org", pets: "Strict quarantine", time: "6–12 mo" }
+    ];
+    document.querySelector("#pathway-table tbody").innerHTML = pathways.map(p =>
+      `<tr><td>${p.country}</td><td>${p.pathway}</td><td>${p.sponsor}</td><td>${p.pets}</td><td>${p.time}</td></tr>`
+    ).join("");
+
+    function renderCountries() {
+      const region = document.getElementById("region-filter").value;
+      const pri = document.getElementById("priority-filter").value;
+      let list = [...CIVIC_PORTAL.EUROPE.map(c => ({...c, region: "europe"})), ...CIVIC_PORTAL.ASIA.map(c => ({...c, region: "asia"}))];
+      if (region !== "all") list = list.filter(c => c.region === region);
+      if (pri === "priority") list = list.filter(c => c.priority);
+      document.getElementById("country-list").innerHTML = list.map(c =>
+        `<a href="../${c.region}/${c.slug}/index.html" style="display:block;padding:10px;border-bottom:1px solid var(--border);color:inherit;text-decoration:none;">
+          ${c.flag} <strong>${c.name}</strong> — ${c.focus.slice(0,2).join(", ")}
+        </a>`).join("");
+    }
+    document.getElementById("region-filter").addEventListener("change", renderCountries);
+    document.getElementById("priority-filter").addEventListener("change", renderCountries);
+    renderCountries();
+
+    document.getElementById("score-btn").addEventListener("click", () => {
+      const timeline = document.getElementById("timeline").value;
+      const score = timeline.includes("ASAP") ? 72 : 85;
+      document.getElementById("score-result").innerHTML = `
+        <div class="stats-row">
+          <div class="stat"><div class="stat-label">Overall Readiness</div><div class="stat-value">${score}%</div></div>
+          <div class="stat"><div class="stat-label">Top Match</div><div class="stat-value" style="font-size:1rem;">Estonia / Poland / Romania</div></div>
+          <div class="stat"><div class="stat-label">Pet Complexity</div><div class="stat-value" style="font-size:1rem;">Medium (EU)</div></div>
+        </div>
+        <p style="color:var(--muted);margin-top:8px;">Focus on NGOs offering duty-station housing + relocation allowance. Lead with pro-bono technical/ops skills in exchange for sponsored move.</p>`;
+    });
+
+    CIVIC_OFFLINE_AI.mountChat({ greeting: "I can help plan relocation with sponsored housing, visa types, and pet import rules — fully offline." });
+  </script>
+</body>
+</html>

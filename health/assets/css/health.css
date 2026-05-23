@@ -1,0 +1,46 @@
+:root {
+  --health-accent: #10b981;
+  --health-accent-2: #14b8a6;
+}
+
+.health-hero {
+  background: linear-gradient(135deg, rgba(16,185,129,0.18), rgba(20,184,166,0.12));
+  border: 1px solid var(--border);
+}
+
+.health-hero .tag-free {
+  background: rgba(16,185,129,0.25);
+  border-color: var(--health-accent);
+  color: #6ee7b7;
+  font-weight: 700;
+}
+
+.health-badge {
+  background: rgba(16,185,129,0.2);
+  color: #6ee7b7;
+}
+
+.disclaimer {
+  background: rgba(245,158,11,0.12);
+  border: 1px solid rgba(245,158,11,0.35);
+  border-radius: var(--radius);
+  padding: 14px 16px;
+  font-size: 0.85rem;
+  color: var(--muted);
+  margin-bottom: 20px;
+}
+
+.disclaimer strong { color: #fcd34d; }
+
+.agent-card .card { border-left: 3px solid var(--health-accent); }
+
+.facility-setup {
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px;
+  margin-bottom: 20px;
+}
+
+.inventory-low { color: var(--danger); font-weight: 600; }
+.inventory-ok { color: var(--success); }

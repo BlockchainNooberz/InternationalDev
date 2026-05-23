@@ -1,0 +1,122 @@
+/* Portfolio & PDF export styles */
+
+.portfolio-sheet {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: calc(var(--radius) + 4px);
+  padding: 32px;
+  box-shadow: var(--shadow);
+}
+
+.portfolio-header {
+  display: grid;
+  grid-template-columns: 1fr 280px;
+  gap: 24px;
+  margin-bottom: 28px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid var(--border);
+}
+
+@media (max-width: 800px) {
+  .portfolio-header { grid-template-columns: 1fr; }
+}
+
+.portfolio-eyebrow {
+  color: var(--accent-2);
+  font-size: 0.82rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-bottom: 8px;
+}
+
+.portfolio-header h2 {
+  font-size: 1.75rem;
+  margin-bottom: 10px;
+}
+
+.portfolio-lead {
+  color: var(--muted);
+  max-width: 640px;
+  line-height: 1.6;
+}
+
+.portfolio-contact {
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px;
+  font-size: 0.88rem;
+}
+
+.portfolio-contact strong { display: block; margin-bottom: 8px; }
+.portfolio-contact p { color: var(--muted); margin-bottom: 6px; }
+
+.portfolio-section { margin-bottom: 24px; }
+.portfolio-section h3 {
+  font-size: 1rem;
+  margin-bottom: 12px;
+  color: var(--accent-2);
+}
+
+.competency-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.portfolio-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-size: 0.9rem;
+  color: var(--muted);
+}
+
+.portfolio-list li::before {
+  content: "→ ";
+  color: var(--accent);
+}
+
+.portfolio-footer {
+  margin-top: 24px;
+  padding-top: 16px;
+  border-top: 1px solid var(--border);
+  text-align: center;
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+
+@media print {
+  body {
+    background: white !important;
+    color: #111 !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  .shell { max-width: 100%; padding: 0; }
+  .no-print { display: none !important; }
+  .print-only { display: block !important; }
+
+  .portfolio-sheet {
+    box-shadow: none;
+    border: none;
+    padding: 0;
+    background: white;
+  }
+
+  .stat, .portfolio-contact, .tag {
+    border: 1px solid #ccc !important;
+    background: #f8f8f8 !important;
+    color: #111 !important;
+  }
+
+  .portfolio-section h3 { color: #0066cc !important; }
+}
+
+@page {
+  size: A4 portrait;
+  margin: 14mm;
+}

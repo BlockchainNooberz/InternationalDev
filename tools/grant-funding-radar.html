@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Grant & Funding Radar | Civic Portal</title>
+  <link rel="stylesheet" href="../assets/css/portal.css">
+</head>
+<body>
+  <div class="shell">
+    <div class="topbar">
+      <div class="brand"><div class="brand-mark">CP</div><div><h1>Grant & Funding Radar</h1><p>EU · UN · bilateral · foundation opportunities</p></div></div>
+      <nav class="nav-pills"><a class="pill" href="../index.html">Portal</a></nav>
+    </div>
+    <div class="stats-row" id="grant-stats"></div>
+    <div class="panel">
+      <div class="panel-header"><h3>Filter Opportunities</h3></div>
+      <div class="form-row form-row-2">
+        <div><label>Sector</label><select id="sector"><option>Humanitarian</option><option>Community Dev</option><option>Climate</option><option>Health</option><option>Education</option><option>Business / SME</option></select></div>
+        <div><label>Region</label><select id="region"><option>Europe</option><option>Asia</option><option>Global</option></select></div>
+      </div>
+      <button class="btn btn-primary" id="scan-btn">Scan Opportunities</button>
+    </div>
+    <div class="panel" style="margin-top:16px;">
+      <div class="panel-header"><h3>Open Funding Windows</h3><div id="api-status"></div></div>
+      <div id="grant-list"></div>
+    </div>
+  </div>
+  <script src="../assets/js/live-data.js"></script>
+  <script>
+    const grants = [
+      { name: "EU Ukraine Facility — Recovery Grants", donor: "European Commission", max: "€2.5M", deadline: "Rolling", sector: "Humanitarian", region: "Europe" },
+      { name: "OCHA Humanitarian Fund", donor: "UN OCHA", max: "$500K", deadline: "Monthly cycles", sector: "Humanitarian", region: "Global" },
+      { name: "EEA Grants — NGO Program", donor: "EEA", max: "€170K", deadline: "Q3 2026", sector: "Community Dev", region: "Europe" },
+      { name: "KOICA Fellowship & Projects", donor: "South Korea", max: "$1M", deadline: "Annual", sector: "Education", region: "Asia" },
+      { name: "Nordic Climate Facility", donor: "NDF", max: "€500K", deadline: "Q4 2026", sector: "Climate", region: "Global" },
+      { name: "USAID Development Innovation", donor: "USAID", max: "$750K", deadline: "Q2 2026", sector: "Health", region: "Global" },
+      { name: "ASEAN SME Digitalization", donor: "ASEAN + partners", max: "$200K", deadline: "Q3 2026", sector: "Business / SME", region: "Asia" },
+      { name: "GIZ Civil Society Fund", donor: "Germany", max: "€100K", deadline: "Rolling", sector: "Community Dev", region: "Europe" }
+    ];
+    function render(list) {
+      document.getElementById("grant-list").innerHTML = `<table><thead><tr><th>Program</th><th>Donor</th><th>Max</th><th>Deadline</th><th>Sector</th></tr></thead><tbody>${
+        list.map(g => `<tr><td>${g.name}</td><td>${g.donor}</td><td>${g.max}</td><td>${g.deadline}</td><td><span class="badge badge-blue">${g.sector}</span></td></tr>`).join("")
+      }</tbody></table>`;
+      document.getElementById("grant-stats").innerHTML = [
+        { label: "Matches", value: list.length },
+        { label: "Total Ceiling", value: "~$12M+" },
+        { label: "Rolling", value: list.filter(g => g.deadline === "Rolling").length },
+        { label: "Regions", value: new Set(list.map(g => g.region)).size }
+      ].map(s => `<div class="stat"><div class="stat-label">${s.label}</div><div class="stat-value">${s.value}</div></div>`).join("");
+    }
+    render(grants);
+    document.getElementById("scan-btn").addEventListener("click", () => {
+      const sector = document.getElementById("sector").value;
+      const region = document.getElementById("region").value;
+      render(grants.filter(g => (g.sector === sector || sector === "Humanitarian") && (g.region === region || g.region === "Global")));
+    });
+
+    CIVIC_LIVE.fetchGrants().then(data => CIVIC_LIVE.renderStatus(document.getElementById("api-status"), data));
+  </script>
+</body>
+</html>
