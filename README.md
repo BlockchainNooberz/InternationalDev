@@ -1,105 +1,49 @@
-# Civic Portal — International Gov & NGO Dashboards
+# InternationalDev 🌍🛠️
 
-Portfolio of static, offline-capable web dashboards and tools for international government, NGO, humanitarian, charity, volunteer, and relocation workflows across **Europe** and **Asia**.
+> Open-source tools for international development, global health, and humanitarian operations
 
-## Start here — Andrew Elston
+A collection of projects aimed at solving real problems in the international development sector — from field logistics and donor management to public health analytics and NGO operations tooling. Built for organizations like UNICEF, WFP, Red Cross, and humanitarian aid teams worldwide.
 
-```
-projects/dashboards/hub.html
-```
+## Projects Included
 
-Unified directory: all countries, tools, pre-filled email templates, contact block.
+### 🏥 Global Health Analytics
+Monitor disease burden, vaccination coverage, and health system capacity across WHO regions using open data sources.
 
-```
-projects/dashboards/deployment-pitch.html
-```
+### 🚚 Humanitarian Logistics Coordinator  
+AI-powered routing and dispatch platform for last-mile aid delivery — optimizes truck routes, tracks inventory, and coordinates field teams in real time.
 
-PDF-ready pitch with experience block — attach to outreach emails.
+### 💧 WASH Program Tracker
+Water, Sanitation & Hygiene (WASH) project management and impact reporting tool for NGO field operations.
 
-## New in this release
+### 📊 NGO Impact Dashboard
+A data visualization and reporting suite for nonprofits to communicate impact to donors, boards, and partner organizations.
 
-- **portfolio.html** — Resume/portfolio landing with PDF export
-- **europe/ukraine/recovery-center.html** — Deep Ukraine recovery dashboard
-- **tools/live-data-console.html** — REST Countries API + cached UN/EU feeds
-- **europe/russia/governance-research.html** — Public governance indices (research only)
-- **assets/js/live-data.js** — Live API layer with offline fallbacks
-- **assets/js/pdf-export.js** — Print-optimized PDF brief export
+### 🌾 Food Security Monitor
+Real-time food insecurity tracking using FEWS NET, WFP VAM, and satellite crop data — built for early warning and response planning.
 
-## Deployment outreach (relocation sponsorship)
+## Tech Stack
+- **Languages:** Python, JavaScript, HTML/CSS
+- **Data:** UN OCHA, WHO, World Bank, FEWS NET APIs
+- **Visualization:** D3.js, Plotly, Leaflet.js
+- **AI:** LLM-powered report generation and field coordination
 
-```
-projects/dashboards/deployment-pitch.html     — PDF-ready pitch + contact block
-projects/dashboards/tools/deployment-outreach.html — 50+ org directory + authority map
-projects/dashboards/tools/sponsorship-pipeline.html — CRM + follow-up email generator
-```
+## Who This Is For
+- UN agencies (UNICEF, WFP, UNHCR, WHO)
+- International NGOs (Red Cross, MSF, Oxfam, IRC)
+- Government development agencies (USAID, DFID)
+- Academic researchers in global health and development
 
-Includes honest assessments of UN, EU Solidarity Corps, USAID primes, FEMA, DARPA, HAARP, and private contractors with real relocation leverage.
-
-
-Underserved health facilities get dashboards and offline agents at **$0 forever**:
-
-```
-projects/dashboards/health/index.html
-```
-
-- 6 facility types (rural clinic, refugee camp, island post, urban clinic, mobile unit, maternal health)
-- 12 operational dashboard modules (patient flow, pharmacy, scheduling, referrals, cold chain, etc.)
-- 6 offline agents (supply, shifts, intake, referrals, equipment, donor reports)
-- **Not medical advice** — operations and administration only
-
-Regenerate facility pages:
-
+## Getting Started
 ```bash
-node projects/dashboards/health/scripts/generate-health.mjs
+git clone https://github.com/BlockchainNooberz/InternationalDev
+cd InternationalDev
+pip install -r requirements.txt
+python run_dashboard.py
 ```
 
-## Structure
+## About
+Built by **Andrew Elston** — developer and humanitarian technology advocate.
+- GitHub: [BlockchainNooberz](https://github.com/BlockchainNooberz)
+- Contact: andrewelston177@gmail.com
 
-```
-projects/dashboards/
-├── index.html                 # Global portal
-├── assets/
-│   ├── css/portal.css         # Shared design system
-│   └── js/
-│       ├── country-data.js    # Countries, modules, tools metadata
-│       ├── dashboard-core.js  # Dashboard rendering engine
-│       └── offline-ai.js      # Offline rule-based field agent
-├── tools/                     # 8 cross-region tools
-├── europe/                    # 16 country hubs + dashboards
-├── asia/                      # 16 country hubs + dashboards
-└── scripts/
-    └── generate-dashboards.mjs
-```
-
-## Coverage
-
-### Europe (16)
-Ukraine, Romania, Russia (sanctions compliance desk only), Estonia, Finland, Iceland, Greenland, Poland, Latvia, Lithuania, Moldova, Georgia, Czech Republic, Slovakia, Hungary, Bulgaria
-
-### Asia & Pacific (16)
-China, Singapore, Vietnam, South Korea, Nepal, Japan, Taiwan, Thailand, Philippines, Indonesia, Malaysia, Sri Lanka, Maldives, Fiji, Samoa, Palau
-
-### Dashboard modules (14 types)
-Humanitarian ops, refugee resettlement, NGO volunteer coordination, community development, business ecosystem, digital gov, climate resilience, health & welfare, relocation & sponsorship, logistics, sanctions compliance (Russia), grant funding, education & youth, disaster preparedness, rural livelihood
-
-### Cross-region tools (8)
-- Relocation Command Center
-- Grant & Funding Radar
-- Volunteer Deployment Planner
-- Sanctions Screening Desk
-- Pet & Family Relocation Kit
-- Offline Field Agent
-- NGO Partnership Map
-- Sponsorship Pipeline CRM
-
-## Regenerate country files
-
-```bash
-node projects/dashboards/scripts/generate-dashboards.mjs
-```
-
-## Notes
-
-- Demo data is seeded per country/module for portfolio presentation.
-- Russia hub is limited to US/EU sanctions compliance reference workflows.
-- Replace static data with live APIs (UN OCHA, EU Funding Portal, etc.) for production use.
+*Free for all humanitarian and development organizations.*
